@@ -20,7 +20,7 @@
 \title{When and Why Does Hindsight Experience Replay\\
 Improve Soft Actor-Critic under Sparse Rewards?}
 \author{Mustafa Asfari \\ Mohammad Alkhozami \\
-\url{github.com/mustafa99705/adrl-sac-her-fetchreach}}
+\url{github.com/mustafa99705/-adrl-sac-her-fetchreach}}
 
 \begin{document}
 
@@ -78,6 +78,33 @@ the value function must condition on the desired goal. The Fetch environments
 and their sparse/dense reward variants are based on the multi-goal robotics
 benchmark introduced by Plappert et al.~\cite{plappert18} and are available
 through Gymnasium-Robotics.
+
+\section{Contribution and Attribution}
+\label{sec:contribution}
+We build on existing, unmodified implementations rather than reimplementing
+published algorithms: SAC and its \texttt{HerReplayBuffer} are
+Stable-Baselines3's~\cite{raffin21sb3}, the Fetch environments and their
+sparse/dense reward variants are Gymnasium-Robotics' (following Plappert et
+al.~\cite{plappert18}), and our hyperparameters are the tuned Fetch settings
+from RL Baselines3 Zoo~\cite{raffin20zoo} --- we did not run our own
+hyperparameter search. Reimplementing SAC/HER from scratch was explicitly out
+of scope for this project.
+
+Our own contribution is the experimental design and everything needed to run,
+diagnose, and interpret it: (1) identifying and fixing a reset bug in
+\texttt{gymnasium-robotics} 1.3.x that silently made the task harder than
+documented (\texttt{env\_fix.py}, Section~\ref{sec:setup}); (2) the
+training/evaluation pipeline (\texttt{train.py}) supporting both tasks, all
+four conditions, and the relabeling-ratio ablation under one shared
+configuration; (3) \texttt{HerDiagnosticsCallback}, which logs the
+entropy-coefficient and goal-distance-percentile trajectories used for the
+mechanism analysis in Section~\ref{sec:mechanism} --- this diagnostic is not
+part of Stable-Baselines3 and was written for this project; (4) designing and
+running all 70 training runs, including the pilot used to calibrate the
+FetchPush step budget, and the analysis/plotting pipeline
+(\texttt{plot\_results.py}); and (5) the interpretation in
+Section~\ref{sec:results}, including the entropy-collapse account of why HER
+helps and the finding that relabeling-ratio benefit saturates.
 
 \section{Method}
 We compare four conditions --- dense SAC, dense SAC+HER, sparse SAC, and
