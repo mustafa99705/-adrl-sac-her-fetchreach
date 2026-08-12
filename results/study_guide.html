@@ -1,0 +1,382 @@
+<title>خطة الدراسة — SAC-HER دفاع المشروع</title>
+<style>
+  :root {
+    --bg: #F5F6F8;
+    --surface: #FFFFFF;
+    --surface-2: #EEF1F4;
+    --border: #DDE2E8;
+    --fg: #14171C;
+    --fg-muted: #5B6472;
+    --accent: #0E7C86;
+    --accent-soft: #E1F1F1;
+    --warn: #A5690C;
+    --warn-soft: #FBF1DF;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #0D1117;
+      --surface: #161B22;
+      --surface-2: #1B222B;
+      --border: #2A3138;
+      --fg: #E6E9EF;
+      --fg-muted: #9AA4B2;
+      --accent: #45C7D1;
+      --accent-soft: #122E31;
+      --warn: #E3A73B;
+      --warn-soft: #2B2213;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #0D1117; --surface: #161B22; --surface-2: #1B222B; --border: #2A3138;
+    --fg: #E6E9EF; --fg-muted: #9AA4B2; --accent: #45C7D1; --accent-soft: #122E31;
+    --warn: #E3A73B; --warn-soft: #2B2213;
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    background: var(--bg);
+    color: var(--fg);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Tahoma, Arial, sans-serif;
+    margin: 0;
+    padding: 2.5rem 1.25rem 5rem;
+    line-height: 1.6;
+  }
+  .mono { font-family: ui-monospace, "SF Mono", "Cascadia Code", "Roboto Mono", Consolas, monospace; }
+  .page { max-width: 760px; margin: 0 auto; display: flex; flex-direction: column; gap: 2rem; }
+
+  header { display: flex; flex-direction: column; gap: 0.5rem; direction: rtl; text-align: right; }
+  .eyebrow { color: var(--accent); font-size: 0.78rem; letter-spacing: 0.06em; text-transform: uppercase; font-family: ui-monospace, monospace; }
+  h1 { font-size: 1.5rem; margin: 0; text-wrap: balance; }
+  header p { color: var(--fg-muted); margin: 0.2rem 0 0; font-size: 0.92rem; }
+
+  nav.toc {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1rem 1.25rem;
+    direction: rtl; text-align: right;
+  }
+  nav.toc div.title { font-size: 0.8rem; color: var(--fg-muted); margin-bottom: 0.5rem; font-family: ui-monospace, monospace; text-transform: uppercase; letter-spacing: 0.04em;}
+  nav.toc ol { margin: 0; padding-inline-start: 1.3rem; display: flex; flex-direction: column; gap: 0.3rem; font-size: 0.9rem; }
+  nav.toc a { color: var(--fg); text-decoration: none; }
+  nav.toc a:hover { color: var(--accent); }
+
+  section { display: flex; flex-direction: column; gap: 0.9rem; scroll-margin-top: 1.5rem; }
+  .arblock { direction: rtl; text-align: right; unicode-bidi: isolate; }
+  h2 { font-size: 1.15rem; margin: 0; padding-bottom: 0.5rem; border-bottom: 2px solid var(--accent); direction: rtl; text-align: right; }
+  h2 .num { color: var(--accent); font-family: ui-monospace, monospace; margin-inline-end: 0.4rem; }
+  h3 { font-size: 0.98rem; margin: 0.3rem 0 0; direction: rtl; text-align: right; }
+  p { margin: 0; }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1rem 1.25rem;
+    direction: rtl; text-align: right;
+    display: flex; flex-direction: column; gap: 0.5rem;
+  }
+  .callout {
+    background: var(--accent-soft);
+    border: 1px solid var(--accent);
+    border-radius: 8px;
+    padding: 0.85rem 1.1rem;
+    direction: rtl; text-align: right;
+    font-size: 0.9rem;
+  }
+  .callout .lbl { font-family: ui-monospace, monospace; font-size: 0.72rem; color: var(--accent); text-transform: uppercase; letter-spacing: 0.05em; display: block; margin-bottom: 0.3rem; }
+  .gap {
+    background: var(--warn-soft);
+    border: 1px solid var(--warn);
+    border-radius: 8px;
+    padding: 0.85rem 1.1rem;
+    direction: rtl; text-align: right;
+    font-size: 0.9rem;
+  }
+  .gap .lbl { font-family: ui-monospace, monospace; font-size: 0.72rem; color: var(--warn); text-transform: uppercase; letter-spacing: 0.05em; display: block; margin-bottom: 0.3rem; }
+
+  table { border-collapse: collapse; width: 100%; font-size: 0.86rem; direction: rtl; }
+  th, td { border: 1px solid var(--border); padding: 0.45rem 0.6rem; text-align: right; }
+  th { background: var(--surface-2); font-weight: 600; }
+  td.mono, th.mono { direction: ltr; text-align: left; font-variant-numeric: tabular-nums; }
+
+  code { font-family: ui-monospace, monospace; background: var(--surface-2); border-radius: 4px; padding: 0.1em 0.35em; font-size: 0.9em; direction: ltr; unicode-bidi: isolate; }
+
+  figure { margin: 0; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 1rem; }
+  figure svg { width: 100%; height: auto; display: block; color: var(--fg-muted); }
+  figcaption { margin-top: 0.6rem; font-size: 0.82rem; color: var(--fg-muted); direction: rtl; text-align: right; }
+
+  details {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 0.7rem 1rem;
+    direction: rtl; text-align: right;
+  }
+  details + details { margin-top: 0.5rem; }
+  summary { cursor: pointer; font-weight: 600; font-size: 0.92rem; }
+  summary:focus-visible { outline: 2px solid var(--accent); }
+  details[open] summary { margin-bottom: 0.6rem; }
+  details .a { font-size: 0.88rem; color: var(--fg-muted); }
+
+  .qgroup { font-family: ui-monospace, monospace; font-size: 0.75rem; color: var(--accent); text-transform: uppercase; letter-spacing: 0.05em; margin: 1rem 0 -0.3rem; direction: rtl; text-align: right; }
+
+  ul.checklist { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.4rem; direction: rtl; text-align: right; font-size: 0.9rem; }
+  ul.checklist li::before { content: "☐"; margin-inline-end: 0.5rem; color: var(--accent); }
+
+  footer { border-top: 1px solid var(--border); padding-top: 1rem; font-size: 0.78rem; color: var(--fg-muted); direction: rtl; text-align: right; }
+</style>
+
+<div class="page">
+
+  <header>
+    <div class="eyebrow">SAC-HER · defense prep</div>
+    <h1>خطة الدراسة — تحضير للإجابة على أي سؤال من المشرفين</h1>
+    <p>هاد مو ملخص للنتائج — هاد كل الخلفية النظرية والمنهجية والتقنية يلي المفروض تفهموها منيح، مرتبة بالترتيب يلي لازم تدرسوها فيه. المصطلحات التقنية تركتها بالإنجليزي لأنو هيك رح تحكوا فيها مع المشرفين.</p>
+  </header>
+
+  <nav class="toc">
+    <div class="title">المحتويات</div>
+    <ol>
+      <li><a href="#s1">أساسيات RL يلي لازم تكون محفوظة عن ظهر قلب</a></li>
+      <li><a href="#s2">SAC تحديداً — ليش هاي الخوارزمية وكيف بتشتغل</a></li>
+      <li><a href="#s3">مشكلة الـ sparse reward — بالصياغة الدقيقة</a></li>
+      <li><a href="#s4">HER — الآلية بالتفصيل الدقيق (مو التبسيط)</a></li>
+      <li><a href="#s5">Goal-conditioned RL / UVFA — الرابط النظري</a></li>
+      <li><a href="#s6">بيئات Fetch — التفاصيل التقنية</a></li>
+      <li><a href="#s7">منهجية التجربة — ليش قررنا كل شي هيك</a></li>
+      <li><a href="#s8">المقاييس (Metrics) — شو كل وحدة فيهم بتقيس</a></li>
+      <li><a href="#s9">النتائج — الأرقام وتفسيرها</a></li>
+      <li><a href="#s10">قرارات لازم تكونوا جاهزين تدافعوا عنها</a></li>
+      <li><a href="#s11">بنك الأسئلة المتوقعة</a></li>
+      <li><a href="#s12">قايمة تحقق سريعة قبل الدفاع</a></li>
+    </ol>
+  </nav>
+
+  <section id="s1">
+    <h2><span class="num mono">01</span>أساسيات RL يلي لازم تكون محفوظة عن ظهر قلب</h2>
+    <div class="card">
+      <p class="arblock">مصطلحات أساسية لازم تعرفوا تعرّفوها بجملة وحدة كل وحدة، بدون تردد:</p>
+      <table>
+        <tr><th>المصطلح</th><th class="arblock">التعريف بجملة وحدة</th></tr>
+        <tr><td class="mono">agent</td><td class="arblock">البرنامج/الروبوت يلي عم يتخذ القرارات (هون: SAC policy)</td></tr>
+        <tr><td class="mono">environment</td><td class="arblock">المحاكاة (FetchReach / FetchPush) يلي الـ agent عم يتفاعل معها</td></tr>
+        <tr><td class="mono">state / observation</td><td class="arblock">وصف وضعية الروبوت حالياً (موقع اليد، سرعتها، الخ)</td></tr>
+        <tr><td class="mono">action</td><td class="arblock">القرار يلي الـ agent باخده كل خطوة (تحريك اليد بأي اتجاه)</td></tr>
+        <tr><td class="mono">reward</td><td class="arblock">رقم بيقول قديش كانت الخطوة منيحة</td></tr>
+        <tr><td class="mono">policy π(a|s)</td><td class="arblock">الاستراتيجية يلي الـ agent بيتعلمها: أي action ياخد بأي state</td></tr>
+        <tr><td class="mono">episode</td><td class="arblock">محاولة وحدة من البداية للنهاية (هون: 50 خطوة بالضبط، دايماً)</td></tr>
+        <tr><td class="mono">off-policy</td><td class="arblock">بيتعلم من بيانات قديمة/من أي policy، مو بس من التجارب الأخيرة (بعكس on-policy)</td></tr>
+      </table>
+      <div class="callout"><span class="lbl">ليش مهم</span>الفرق بين off-policy و on-policy هو أساس ليش HER أصلاً ممكنة — تفصيل أكتر بقسم 4.</div>
+    </div>
+  </section>
+
+  <section id="s2">
+    <h2><span class="num mono">02</span>SAC تحديداً — ليش هاي الخوارزمية وكيف بتشتغل</h2>
+    <div class="card">
+      <p class="arblock"><strong>SAC = Soft Actor-Critic</strong> (Haarnoja et al. 2018). ثلاث خصائص لازم تعرفوها:</p>
+      <p class="arblock">1) <strong>Actor-Critic</strong>: في شبكتين — <code>actor</code> (الـ policy، بتقرر شو الـ action) و<code>critic</code> (بتقيّم قديش الـ action منيح، اسمها Q-function). SAC فعلياً عندها Q-network زوج (twin critics) لتقليل الانحياز بالتقدير.</p>
+      <p class="arblock">2) <strong>Maximum entropy</strong>: الهدف مش بس تعظيم المكافأة، إنما مكافأة + معامل×عشوائية القرار (entropy). يعني الـ policy بتنعاقب إذا صارت "متأكدة جداً" بسرعة — هاد بيشجع استكشاف أوسع وبيمنع التقارب المبكر لحل ضعيف.</p>
+      <p class="arblock">3) <strong>معامل الـ entropy (α) يتضبط أوتوماتيكياً</strong>: مو رقم ثابت — الخوارزمية بتتعلمه بنفسها أثناء التدريب (بنستخدم <code>ent_coef="auto"</code>). الهدف: يوصل لـ"entropy مستهدفة" افتراضية = <code>-dim(action_space)</code>. **هاد بالضبط الرقم يلي رسمناه برسمة fig4** — مراقبة α عبر الوقت بتوري كيف الاستكشاف بيتغير.</p>
+      <div class="callout"><span class="lbl">ليش SAC تحديداً (مو PPO مثلاً)</span>SAC هي <strong>off-policy</strong> — بتقدر تتعلم من أي بيانات قديمة مخزّنة بـreplay buffer، مو بس من آخر تجارب. هاد شرط أساسي حتى HER تشتغل (قسم 4).</div>
+    </div>
+  </section>
+
+  <section id="s3">
+    <h2><span class="num mono">03</span>مشكلة الـ sparse reward — بالصياغة الدقيقة</h2>
+    <div class="card">
+      <table>
+        <tr><th>النوع</th><th class="mono">الصيغة بالكود</th><th class="arblock">ليش صعبة/سهلة</th></tr>
+        <tr><td class="arblock">dense</td><td class="mono">r = -‖achieved_goal - desired_goal‖</td><td class="arblock">إشارة مستمرة، أي حركة أفضل بتاخد رقم أحسن فوراً</td></tr>
+        <tr><td class="arblock">sparse</td><td class="mono">r = 0 if dist ≤ 0.05 else -1</td><td class="arblock">نفس الرقم (−1) سواء كنت 1 سم أو 30 سم غلط — صفر إشارة اتجاه</td></tr>
+      </table>
+      <p class="arblock">النقطة الدقيقة يلي لازم تنتبهوا لها: المكافأة الصامتة **مو بس بآخر الحلقة** — هي بكل خطوة (٥٠ مرة بالحلقة)، بس دايماً نفس القيمة لحد ما توصل. يعني حلقة فاشلة بالكامل بترجع بالضبط <code>−50</code>. المشكلة مش "قلة معلومات بآخر الحلقة" — المشكلة إنو **ما في تدرّج (gradient) نحو الهدف إطلاقاً** لين الاستكشاف العشوائي يصادفه بالصدفة.</p>
+      <div class="gap"><span class="lbl">سؤال متوقع</span>"ليش مش بس نستخدم dense دايماً؟" — الجواب: بمعظم المهام الواقعية صعب/مستحيل تصمم مكافأة غنية دقيقة (لازم معرفة مسبقة بالمهمة، وممكن "تغش" الروبوت يتعلم سلوك غير مقصود يستغل تفاصيل صيغة المكافأة). المكافأة الصامتة (نجح/فشل) هي الأسهل تصميم والأقرب للواقع.</div>
+    </div>
+  </section>
+
+  <section id="s4">
+    <h2><span class="num mono">04</span>HER — الآلية بالتفصيل الدقيق (مو التبسيط)</h2>
+    <div class="card">
+      <p class="arblock">التبسيط يلي حكيناه قبل ("نتظاهر إنو مكان الوصول كان الهدف") صحيح بس مش دقيق تقنياً. هيك بالضبط SB3 منفذاها (تأكدت من كود المكتبة نفسها):</p>
+    </div>
+
+    <figure role="img" aria-label="حلقة تدريب حقيقية فاشلة بالهدف الأصلي g، وتحتها نفس الحلقة معاد تسميتها بهدف g' مأخوذ من حالة لاحقة بنفس الحلقة، مع إعادة حساب المكافأة فتصير نجاح.">
+      <svg viewBox="0 0 760 260" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <marker id="arrow2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" fill="currentColor"/>
+          </marker>
+        </defs>
+        <text x="20" y="26" font-size="12.5" fill="currentColor" font-family="ui-monospace, monospace" font-weight="600">real episode (as stored)</text>
+        <line x1="30" y1="55" x2="600" y2="55" stroke="currentColor" stroke-width="1.5"/>
+        <circle cx="30" cy="55" r="5" fill="currentColor"/>
+        <circle cx="180" cy="55" r="5" fill="currentColor"/>
+        <circle cx="330" cy="55" r="5" fill="currentColor"/>
+        <circle cx="480" cy="55" r="5" fill="currentColor"/>
+        <circle cx="600" cy="55" r="6" fill="none" stroke="currentColor" stroke-width="2"/>
+        <text x="30" y="75" font-size="10.5" text-anchor="middle" fill="currentColor" opacity="0.7">s0</text>
+        <text x="330" y="75" font-size="10.5" text-anchor="middle" fill="currentColor" opacity="0.7">s_t</text>
+        <text x="600" y="75" font-size="10.5" text-anchor="middle" fill="currentColor" opacity="0.7">s_T</text>
+        <path d="M 690 30 L 660 55 L 690 80" fill="none" stroke="currentColor" stroke-width="1.5"/>
+        <text x="700" y="45" font-size="10.5" fill="currentColor" opacity="0.75">original goal g</text>
+        <text x="700" y="60" font-size="10.5" fill="currentColor" opacity="0.75">(never reached —</text>
+        <text x="700" y="75" font-size="10.5" fill="currentColor" opacity="0.75">reward always −1)</text>
+
+        <line x1="330" y1="55" x2="330" y2="140" stroke="currentColor" stroke-width="1.2" stroke-dasharray="3 3" marker-end="url(#arrow2)"/>
+        <text x="345" y="105" font-size="10.5" fill="currentColor" opacity="0.7">achieved_goal at s_t</text>
+        <text x="345" y="118" font-size="10.5" fill="currentColor" opacity="0.7">becomes g′</text>
+
+        <text x="20" y="165" font-size="12.5" style="fill:var(--accent)" font-family="ui-monospace, monospace" font-weight="600">virtual transition (sampled at training time)</text>
+        <rect x="20" y="180" width="290" height="50" rx="6" fill="none" style="stroke:var(--accent)" stroke-width="1.5"/>
+        <text x="35" y="200" font-size="11" fill="currentColor" font-family="ui-monospace, monospace">(s_t, a_t, s_t+1, g′)</text>
+        <text x="35" y="218" font-size="10.5" fill="currentColor" opacity="0.75">desired_goal replaced with g′</text>
+
+        <line x1="310" y1="205" x2="360" y2="205" stroke="currentColor" stroke-width="1.5" marker-end="url(#arrow2)"/>
+        <text x="335" y="198" font-size="9.5" text-anchor="middle" fill="currentColor" opacity="0.7">compute_reward()</text>
+
+        <rect x="365" y="180" width="220" height="50" rx="6" fill="none" style="stroke:var(--accent)" stroke-width="1.5"/>
+        <text x="380" y="200" font-size="11" style="fill:var(--accent)" font-family="ui-monospace, monospace" font-weight="600">r = success (≈0)</text>
+        <text x="380" y="218" font-size="10.5" fill="currentColor" opacity="0.75">real learning signal</text>
+      </svg>
+    </figure>
+
+    <div class="card">
+      <p class="arblock"><strong>نقاط دقيقة لازم تنتبهوا لها:</strong></p>
+      <p class="arblock">• <code>HerReplayBuffer</code> بـSB3 **ما بتخزّن نسخ معاد تسميتها مسبقاً**. هي بتخزّن الحلقة الحقيقية بس، وإعادة التسمية بتصير <strong>لحظة أخذ عينة تدريب (sampling time)</strong> — كل مرة بيوخد minibatch، نسبة منه بتصير "افتراضية" (virtual) بهالطريقة.</p>
+      <p class="arblock">• استراتيجية اختيار g′ يلي استخدمناها اسمها <code>"future"</code>: بتوخد حالة عشوائية <strong>لاحقة</strong> بنفس الحلقة (بعد اللحظة الحالية)، مو أي حالة عشوائية من الحلقة كلها.</p>
+      <p class="arblock">• <code>n_sampled_goal</code> **ما بيعني "خزّن k نسخة"** — هو بيحدد نسبة الـ minibatch يلي بتكون افتراضية، بالصيغة: <code class="mono" style="direction:ltr; display:inline-block;">her_ratio = 1 − 1/(n_sampled_goal+1)</code>. يعني عند 4 (الافتراضي): 80% من كل دفعة تدريب هي بيانات معاد تسميتها، و20% بس حقيقية. عند 1: 50%. عند 8: ~89%.</p>
+      <div class="callout"><span class="lbl">ليش لازم off-policy تحديداً</span>الـ virtual transition عمرها ما صارت فعلياً بالبيئة بهالـ desired_goal — هي "مصطنعة". خوارزميات on-policy (متل PPO) بتفترض إنو البيانات جايي من نفس الـ policy الحالية بنفس التوزيع، فحقن بيانات مصطنعة هيك بيكسر الافتراض الرياضي تبع التدريب. الخوارزميات off-policy (متل SAC) مصممة أصلاً تتعلم من أي بيانات مخزّنة — فمافي مشكلة.</div>
+    </div>
+  </section>
+
+  <section id="s5">
+    <h2><span class="num mono">05</span>Goal-conditioned RL / UVFA — الرابط النظري</h2>
+    <div class="card">
+      <p class="arblock">بالـ RL العادي، الشبكة بتتعلم "قديش هالحالة منيحة" لهدف واحد ثابت. هون الشبكة (Q-function) شايفة الهدف كجزء من المدخلات: <code>Q(s, a, g)</code> بدل <code>Q(s, a)</code> — هاد اسمه <strong>Universal Value Function Approximator (UVFA)</strong> (Schaul et al. 2015)، وهو يلي بيخلي شبكة وحدة تعمم عبر أهداف مختلفة بدل ما تحتاج شبكة منفصلة لكل هدف.</p>
+      <p class="arblock">بكودنا: <code>MultiInputPolicy</code> بتاخد observation عبارة عن dict فيه <code>observation</code> (حالة الروبوت) و<code>achieved_goal</code> و<code>desired_goal</code> — هاي فعلياً تطبيق UVFA.</p>
+      <div class="callout"><span class="lbl">الرابط مع HER</span>HER هي طريقة ذكية لتوليد بيانات تدريب <strong>لنفس هالشبكة الموحدة تبع UVFA</strong> — بدل ما تنتظر تصادف نجاح عشوائي لهدف معين، كل حلقة (حتى الفاشلة) بتعطيك مثال "نجاح مضمون" لهدف بديل — تغطية أوسع وأسرع لفضاء الأهداف يلي الشبكة لازم تتعلمه.</div>
+    </div>
+  </section>
+
+  <section id="s6">
+    <h2><span class="num mono">06</span>بيئات Fetch — التفاصيل التقنية</h2>
+    <div class="card">
+      <table>
+        <tr><th>الخاصية</th><th class="arblock">القيمة</th></tr>
+        <tr><td class="arblock">الروبوت</td><td class="arblock">ذراع Fetch Mobile Manipulator، 7 محاور، بيتحكم بموقع نهاية اليد</td></tr>
+        <tr><td class="mono">action space</td><td class="mono">4D مستمر: (dx, dy, dz, gripper)</td></tr>
+        <tr><td class="mono">observation</td><td class="arblock">dict: <code>observation</code> (حالة اليد/السرعة)، <code>achieved_goal</code>، <code>desired_goal</code></td></tr>
+        <tr><td class="arblock">طول الحلقة</td><td class="arblock">50 خطوة بالضبط، دايماً — ما في إنهاء مبكر</td></tr>
+        <tr><td class="arblock">حد النجاح</td><td class="mono">‖achieved − desired‖ ≤ 0.05 m (5 سم)</td></tr>
+        <tr><td class="arblock">Reach</td><td class="arblock">الهدف = نقطة بالهوا، اليد لازم توصلها مباشرة</td></tr>
+        <tr><td class="arblock">Push</td><td class="arblock">الهدف = موقع على الطاولة، لازم تدفع مكعب لهناك (بدون مسك/رفع)</td></tr>
+      </table>
+      <div class="gap"><span class="lbl">باغ لازم تعرفوه</span>gymnasium-robotics 1.3.x فيها باغ بإعادة ضبط الحلقة (reset) — بيرجع الذراع لوضعية افتراضية بالـ XML بدل الوضعية الأصلية المرفوعة يلي الأهداف بتتوزع حواليها. صلحناه بـ<code>env_fix.py</code> (نفس إصلاح المكتبة الرسمي بنسخة أحدث، بس تلك النسخة حذفت الأسماء يلي احنا محتاجينها). بدون الإصلاح: sparse كانت 0% نجاح بكل الـ 5 seeds — كان ممكن نستنتج غلط إنو sparse SAC "ما بتتعلم إطلاقاً" بينما فعلياً كانت المهمة مشوّهة.</div>
+    </div>
+  </section>
+
+  <section id="s7">
+    <h2><span class="num mono">07</span>منهجية التجربة — ليش قررنا كل شي هيك</h2>
+    <div class="card">
+      <h3>ليش hyperparameters ثابتة بكل الحالات؟</h3>
+      <p class="arblock">لو ضبطنا كل حالة لحالها، ما رح نعرف الفرق بالنتيجة جاي من نوع المكافأة/HER، أو من التوليف الأفضل. هاد اسمه تجنب الـ <strong>confound</strong> (تشابك المتغيرات) — مبدأ أساسي بأي تجربة علمية مقارنة.</p>
+      <table>
+        <tr><td class="mono">gamma</td><td class="mono">0.95</td></tr>
+        <tr><td class="mono">learning_rate</td><td class="mono">1e-3</td></tr>
+        <tr><td class="mono">batch_size</td><td class="mono">256</td></tr>
+        <tr><td class="mono">buffer_size</td><td class="mono">1,000,000</td></tr>
+        <tr><td class="mono">learning_starts</td><td class="mono">1,000</td></tr>
+        <tr><td class="mono">net_arch</td><td class="mono">[256, 256]</td></tr>
+      </table>
+      <p class="arblock">مصدرها: القيم المضبوطة من rl-baselines3-zoo لمهام Fetch تحديداً — مو أرقام اخترناها عشوائياً.</p>
+      <h3>ليش 10 seeds؟</h3>
+      <p class="arblock">تدريب RL فيه عشوائية عالية (بداية الشبكة، الاستكشاف). Seed وحدة ممكن تطلع نتيجة استثنائية بالصدفة (شفنا هاد فعلياً — seeds شاذة بنتائجنا). لازم عدة تكرارات نفرّق بين "نمط حقيقي" و"صدفة".</p>
+      <h3>ليش Push بس بحالتين (مش أربعة)؟</h3>
+      <p class="arblock">قرار من البروبوزال نفسه لتوفير الحوسبة — Push أثقل بكتير (مليون خطوة بدل 100 ألف). ركزنا على أهم مقارنة (sparse مقابل sparse+HER) بدل تشتيت الميزانية عالأربع حالات.</p>
+    </div>
+  </section>
+
+  <section id="s8">
+    <h2><span class="num mono">08</span>المقاييس (Metrics) — شو كل وحدة فيهم بتقيس</h2>
+    <div class="card">
+      <table>
+        <tr><th>المقياس</th><th class="arblock">شو بيقيس بالضبط</th></tr>
+        <tr><td class="arblock">Success rate (eval)</td><td class="arblock">نجاح على 20 حلقة تقييم منفصلة (policy حتمية، بدون استكشاف عشوائي) — المقياس الأهم</td></tr>
+        <tr><td class="arblock">Success rate (train)</td><td class="arblock">نجاح الحلقات الفعلية أثناء التدريب — بيوري تذبذب الاستكشاف، مش أداء نهائي نظيف</td></tr>
+        <tr><td class="arblock">Steps to 90%</td><td class="arblock">أول نقطة توصل فيها منحنى النجاح لـ90% — مقياس "قديش بسرعة تعلّم"</td></tr>
+        <tr><td class="arblock">AUC</td><td class="arblock">المساحة تحت منحنى النجاح — بيلخّص "كفاءة العينة" بالكامل برقم وحد (منحنى بيوصل بسرعة وبيضل عالي = AUC أعلى)</td></tr>
+        <tr><td class="arblock">Entropy coefficient (α)</td><td class="arblock">ميل SAC للاستكشاف العشوائي — لو نزل بسرعة يعني السياسة "تأكدت" بسرعة (ممكن مبكر جداً)</td></tr>
+        <tr><td class="arblock">Goal-distance percentiles</td><td class="arblock">بُعد الأهداف يلي الشبكة عم تتدرب عليها فعلياً بكل لحظة — بيوري "المنهج الضمني" يلي HER عم تصنعه</td></tr>
+      </table>
+    </div>
+  </section>
+
+  <section id="s9">
+    <h2><span class="num mono">09</span>النتائج — الأرقام وتفسيرها</h2>
+    <div class="card">
+      <table>
+        <tr><th>المهمة</th><th class="arblock">الحالة</th><th class="mono">نجاح نهائي</th><th class="mono">seeds ≥90%</th></tr>
+        <tr><td class="arblock">Reach</td><td class="mono">dense</td><td class="mono">100%</td><td class="mono">10/10</td></tr>
+        <tr><td class="arblock">Reach</td><td class="mono">dense_her</td><td class="mono">100%</td><td class="mono">10/10</td></tr>
+        <tr><td class="arblock">Reach</td><td class="mono">sparse</td><td class="mono">99.4%</td><td class="mono">10/10</td></tr>
+        <tr><td class="arblock">Reach</td><td class="mono">sparse_her</td><td class="mono">100%</td><td class="mono">10/10</td></tr>
+        <tr><td class="arblock">Push</td><td class="mono">sparse</td><td class="mono"><strong>5.4%</strong></td><td class="mono">0/10</td></tr>
+        <tr><td class="arblock">Push</td><td class="mono">sparse_her</td><td class="mono"><strong>90.7%</strong></td><td class="mono">9/10</td></tr>
+      </table>
+      <p class="arblock"><strong>القراءة الأساسية:</strong> بمهمة سهلة (Reach)، الفرق بين كل الحالات صغير — الاستكشاف العشوائي لحاله كافي غالباً. بمهمة صعبة (Push)، HER هي الفرق الحرفي بين "يتعلم" (90.7%) و"ما يتعلم شي تقريباً" (5.4%). هاد يطابق فرضية البروبوزال الثانية حرفياً.</p>
+      <div class="gap"><span class="lbl">لازم تذكروه بصراحة</span>في seed شاذة بكل إعداد HER على Push (نتيجة ضعيفة جداً مقارنة بالباقي، متل 20% أو 45% بينما الباقي فوق 96%). هاد تباين طبيعي بـRL، بس **ما سويناش اختبار إحصائي رسمي (significance test)** يثبت الفرق — نقطة لازم نعالجها قبل التقرير النهائي أو نذكرها كحد للدراسة.</div>
+    </div>
+  </section>
+
+  <section id="s10">
+    <h2><span class="num mono">10</span>قرارات لازم تكونوا جاهزين تدافعوا عنها</h2>
+    <div class="card">
+      <ul class="checklist">
+        <li>وتيرة التقييم على Push كانت كل 10,000 خطوة، مش 2,000 متل Reach — قرار عملي لتوفير وقت التشغيل مع ميزانية أكبر (مليون خطوة)</li>
+        <li>الـ ablation عند n_sampled_goal=4 ما انعادت تشغيلها لحالها — استخدمنا نفس نتائج sparse+HER الأساسية (نفس الإعداد بالضبط، توفير حوسبة)</li>
+        <li>ما سويناش اختبار إحصائي رسمي (Mann-Whitney / bootstrap CI) — بس بلّغنا mean/std وعدد الـ seeds يلي وصلوا 90%</li>
+        <li>ما جربناش استراتيجيات إعادة تسمية تانية غير "future" (متل "final" أو "episode") — بس النسبة (n_sampled_goal)</li>
+        <li>ما اختبرناش تعميم النتيجة على مهام Fetch تانية (Slide, PickAndPlace)</li>
+      </ul>
+    </div>
+  </section>
+
+  <section id="s11">
+    <h2><span class="num mono">11</span>بنك الأسئلة المتوقعة</h2>
+
+    <div class="qgroup">نظرية</div>
+    <details><summary>ليش SAC وليس PPO أو TD3؟</summary><p class="a">SAC off-policy (بتستفيد من HER يلي بيحتاج replay buffer). PPO on-policy وما بيتماشى طبيعياً مع بيانات معاد تسميتها. TD3 كان ممكن كمان (off-policy)، بس SAC بتضيف ضبط entropy أوتوماتيكي بيقلل الحاجة لضبط يدوي إضافي.</p></details>
+    <details><summary>شو الفرق بين n_sampled_goal و goal_selection_strategy؟</summary><p class="a">strategy = من وين نوخد الهدف البديل (هون: "future" = حالة لاحقة بنفس الحلقة). n_sampled_goal = قديش نسبة عينات التدريب تكون معاد تسميتها (مش عدد نسخ مخزّنة).</p></details>
+    <details><summary>ليش الـ dense+HER ما تحسّنت كتير عن dense لحالها؟</summary><p class="a">لما المكافأة أصلاً غنية بمعلومات (تدرّج مستمر)، إعادة التسمية ما بتضيف قيمة كبيرة إضافية — فايدة HER الأساسية إنها بتعوّض عن غياب الإشارة، مش موجودة أصلاً هون.</p></details>
+
+    <div class="qgroup">منهجية</div>
+    <details><summary>ليش 5 cm بالضبط حد النجاح؟</summary><p class="a">مو قرارنا — تعريف مبني على البيئة نفسها (بروتوكول Plappert et al. 2018)، معيار موحّد بالأدبيات مو شي اخترناه.</p></details>
+    <details><summary>هل النتيجة معتمدة إحصائياً؟</summary><p class="a">صراحة، لسا لأ بشكل رسمي — عنا mean/std وعدد seeds ناجحة، بس ما سويناش اختبار إحصائي. لازم نضيفه قبل الادعاء بثقة عالية (نقطة قسم 10).</p></details>
+    <details><summary>ليش ما جرّبتوا hyperparameter tuning لكل حالة؟</summary><p class="a">بالعكس — تعمّدنا تثبيتها بكل الحالات (نفس القيم لكل شي) حتى الفرق يلي منشوفه يكون بسبب المكافأة/HER فقط، مو بسبب توليف أفضل بحالة عن تانية.</p></details>
+
+    <div class="qgroup">النتائج</div>
+    <details><summary>شو ممكن يفسر الـ seeds الشاذة؟</summary><p class="a">تباين طبيعي بـRL — احتمال الاستكشاف علق بمنطقة ضعيفة أو الـ entropy coefficient نزل بسرعة زيادة. ما لقينا شي غير طبيعي باللوقز (ولا NaN ولا Crash)، بس ما درسناها بعمق أكتر من هيك.</p></details>
+    <details><summary>هل ممكن تعمموا النتيجة على مهام روبوتية تانية؟</summary><p class="a">معقول بناءً على النمط (كل ما صعبت المهمة كبرت فايدة HER)، بس ما اختبرناها فعلياً على مهام تانية — حد صريح للدراسة.</p></details>
+  </section>
+
+  <section id="s12">
+    <h2><span class="num mono">12</span>قايمة تحقق سريعة قبل الدفاع</h2>
+    <div class="card">
+      <ul class="checklist">
+        <li>أقدر اشرح HER بجملتين بدون ما احكي "بنتظاهر" — بلغة دقيقة (virtual transition, compute_reward)</li>
+        <li>أقدر احسب her_ratio يدوياً لأي n_sampled_goal</li>
+        <li>أقدر افرق بين success rate بالتقييم وبالتدريب وليش مختلفين</li>
+        <li>أعرف أرقام النتيجة الأساسية عن ظهر قلب (5.4% مقابل 90.7% على Push)</li>
+        <li>جاهز اذكر الـ5 نقاط تبع قسم 10 بدون تردد لو انسألت</li>
+        <li>فهمت ليش الباغ بالبيئة كان مهم يتصلح قبل أي نتيجة</li>
+      </ul>
+    </div>
+  </section>
+
+  <footer>
+    مبني على EXPERIMENT_LOG.md و README.md وكود المشروع (train.py, plot_results.py) وكود مكتبة stable-baselines3 نفسها (her_replay_buffer.py, sac.py) — تم التحقق من تفاصيل her_ratio وtarget_entropy مباشرة من السورس، مش من الذاكرة.
+  </footer>
+
+</div>

@@ -1,0 +1,13 @@
+numpy==1.26.4
+torch==2.7.1
+stable-baselines3==2.6.0
+gymnasium==1.1.1
+gymnasium-robotics==1.3.1
+mujoco==3.1.6
+tensorboard
+matplotlib
+pandas
+tqdm
+rich
+imageio==2.37.3
+imageio-ffmpeg==0.6.0

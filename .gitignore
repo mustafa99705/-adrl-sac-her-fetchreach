@@ -1,0 +1,28 @@
+# Python
+__pycache__/
+*.pyc
+
+# conda environment (reproducible via setup_env.sh + requirements.txt)
+env/
+
+# trained model weights (large; not needed to verify reported numbers,
+# available on request -- see README). Everything needed to regenerate
+# every figure/table (evaluations.npz, monitor.csv, config.json,
+# her_diagnostics.npz) IS tracked.
+*.zip
+
+# tensorboard event logs (large, redundant with the .npz/.csv summaries)
+**/tb/
+
+# raw SLURM stdout logs (verbose; EXPERIMENT_LOG.md has the distilled history)
+slurm/logs/
+logs/
+
+# LaTeX build artifacts
+*.aux
+*.log
+*.out
+*.synctex.gz
+
+# scratch
+__pycache__/

@@ -1,0 +1,171 @@
+% This is a variation of the NeurIPS'24 format
+\documentclass{article}
+\usepackage[final]{adrl}
+
+\usepackage[utf8]{inputenc} % allow utf-8 input
+\usepackage[T1]{fontenc}    % use 8-bit T1 fonts
+\usepackage{hyperref}       % hyperlinks
+\usepackage{url}            % simple URL typesetting
+\usepackage{booktabs}       % professional-quality tables
+\usepackage{amsfonts}       % blackboard math symbols
+\usepackage{nicefrac}       % compact symbols for 1/2, etc.
+\usepackage{microtype}      % microtypography
+\usepackage{xcolor}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+
+\title{Learning Without a Signal: How Sparse Rewards Cripple SAC\\
+and Whether Hindsight Experience Replay Can Fix It}
+% TODO: replace with your GitHub repository link
+\author{Mustafa Asfari \\ \url{github.com/mustafa-asfari/sac-her-fetchreach}}
+
+\begin{document}
+
+\maketitle
+
+\section{Motivation}
+In real robotic tasks, the most natural reward specification is binary: the
+task was accomplished or it was not. Dense, informative rewards must instead
+be hand-engineered, which requires domain knowledge, is error-prone, and can
+bias the learned behavior in unintended ways. Yet standard off-policy
+actor-critic methods such as Soft Actor-Critic (SAC) are widely believed to
+degrade severely when rewards become sparse, because the replay buffer fills
+with uniformly uninformative transitions before the first success is ever
+observed. We want to \emph{quantify} this degradation in a controlled,
+reproducible experiment on a goal-conditioned robotic reaching task, and then
+test whether Hindsight Experience Replay (HER) --- which manufactures
+successful experience from failed episodes by goal relabeling --- can recover
+dense-reward-like sample efficiency from the sparse signal alone.
+
+\section{Related Topics}
+This project connects off-policy maximum-entropy RL, goal-conditioned RL, and
+reward design. SAC \cite{haarnoja18} is the off-policy actor-critic backbone
+we study. HER \cite{andrychowicz17} is the goal-relabeling mechanism under
+test; it was originally demonstrated with DDPG on the Fetch robotics suite,
+where sparse-reward learning without relabeling failed on all tasks except
+reaching. The Fetch environments and the sparse/dense reward variants we will
+use are standardized in the multi-goal RL benchmark of Plappert et
+al.~\cite{plappert18}, now maintained as Gymnasium-Robotics.
+
+\section{Idea}
+We will run a three-way controlled comparison of SAC on
+\texttt{FetchReach-v3}, a 7-DoF simulated arm that must move its gripper to a
+random 3D goal within 50 steps:
+
+\begin{enumerate}
+    \item \textbf{dense}: vanilla SAC with the informative reward
+          $r = -\| x_{\mathrm{grip}} - g \|$;
+    \item \textbf{sparse}: vanilla SAC with the binary reward of
+          Eq.~\ref{eq:reward};
+    \item \textbf{sparse + HER}: identical to (2), but the replay buffer
+          additionally stores each episode under relabeled goals
+          (Alg.~\ref{alg:her}).
+\end{enumerate}
+
+All three conditions share the same SAC hyperparameters, network sizes, seeds
+and step budget, so the reward signal (and, in condition 3, the relabeling)
+is the only experimental variable. The goal-conditioned sparse reward is
+
+\begin{equation}
+    \label{eq:reward}
+    r(s, a, g) \;=\; -\,\mathbb{1}\!\left[\;\| x_{\mathrm{grip}}(s) - g
+    \| \;>\; \varepsilon\;\right], \qquad \varepsilon = 5\,\mathrm{cm},
+\end{equation}
+
+which is $-1$ on every step outside the success region and $0$ inside it ---
+a policy that never reaches the goal receives the same return ($-50$)
+regardless of how close it got, so the critic receives no gradient toward the
+goal until exploration succeeds by chance. Our hypotheses: (i) sparse SAC
+will learn substantially slower and less reliably than dense SAC; (ii) HER
+will close most of that gap without any reward shaping.
+
+\begin{algorithm}[H]
+    \caption{HER goal relabeling (\emph{future} strategy), after each episode.}
+    \label{alg:her}
+    \begin{algorithmic}
+        \Require episode $(s_0, a_0, \dots, s_T)$ with goal $g$, relabels per
+                 transition $k$
+        \For{$t = 0, \dots, T-1$}
+            \State store $(s_t, a_t, r(s_t, a_t, g), s_{t+1}, g)$ in buffer
+            \For{$i = 1, \dots, k$}
+                \State sample future index $\tau \sim \mathcal{U}(t+1, T)$
+                \State $g' \gets$ achieved gripper position in $s_\tau$
+                \State store $(s_t, a_t, r(s_t, a_t, g'), s_{t+1}, g')$
+                       \Comment{often a success: $r = 0$}
+            \EndFor
+        \EndFor
+    \end{algorithmic}
+\end{algorithm}
+
+\section{Experiments}
+\paragraph{Environments \& Metrics}
+\texttt{FetchReach-v3} and \texttt{FetchReachDense-v3} from
+Gymnasium-Robotics (MuJoCo), with SAC from Stable-Baselines3
+(\texttt{MultiInputPolicy} for the dictionary observations). Every 2{,}000
+training steps we evaluate the deterministic policy on 20 held-out episodes
+and record the \textbf{success rate} (gripper within 5\,cm of the goal at
+episode end), the primary metric that is directly comparable across reward
+types. From these curves we derive: median \textbf{steps-to-90\%-success},
+\textbf{area under the success curve} (sample efficiency), and \textbf{final
+success rate}; we additionally log training-time success rates and episode
+returns as secondary evidence.
+
+\paragraph{Experimental Scope}
+$3$ conditions $\times$ $5$ seeds $\times$ $100$k environment steps $= 15$
+runs. We will not perform per-condition hyperparameter optimization ---
+doing so would confound the comparison; instead all conditions use one fixed,
+literature-derived configuration (rl-baselines3-zoo values for Fetch tasks:
+$\gamma = 0.95$, lr $10^{-3}$, batch 256, buffer $10^6$; SB3 defaults
+otherwise). Planned analysis includes per-seed learning curves (sparse-reward
+learning is expected to be high-variance, which aggregate curves hide). As a
+stretch goal, an ablation of the HER relabeling ratio (\texttt{n\_sampled\_goal}
+$\in \{1, 4, 8\}$) on a subset of seeds.
+
+\paragraph{Estimated Computational Load}
+SAC on FetchReach is small (two-layer MLPs, single environment): we estimate
+$\sim$20 minutes per 100k-step run on a single GPU, i.e.\ $\approx 5$
+GPU-hours for the full grid, executed as a SLURM job array (1 GPU, 4 CPUs,
+16\,GB per task) on the KISSKI cluster. Memory and storage needs are modest
+($<$1\,GB replay buffer per run; a few MB of logs per run). A repeat of the
+full grid for debugging or the ablation fits comfortably within 15 additional
+GPU-hours.
+
+\section{Timeline}
+\begin{itemize}
+    \item \textbf{Research} (week 1): HER and multi-goal RL literature,
+          Gymnasium-Robotics environment semantics and version pinning,
+          SB3 HER implementation details.
+    \item \textbf{Implementation} (week 2): training script with condition
+          flags, seeding and evaluation protocol; SLURM array scripts;
+          smoke tests on CPU.
+    \item \textbf{Experiments} (week 3): pilot run per condition, then the
+          full 15-run grid; re-runs if pilots reveal issues.
+    \item \textbf{Analysis} (week 3--4): aggregate curves, per-seed traces,
+          summary statistics; verify the comparison is fair and the
+          environment behaves as documented.
+    \item \textbf{Reporting} (week 4): figures, write-up, reproducibility
+          instructions.
+\end{itemize}
+
+\begin{thebibliography}{9}
+\bibitem{haarnoja18}
+T.~Haarnoja, A.~Zhou, P.~Abbeel, S.~Levine.
+\newblock Soft Actor-Critic: Off-Policy Maximum Entropy Deep Reinforcement
+Learning with a Stochastic Actor.
+\newblock \emph{ICML}, 2018.
+
+\bibitem{andrychowicz17}
+M.~Andrychowicz, F.~Wolski, A.~Ray, J.~Schneider, R.~Fong, P.~Welinder,
+B.~McGrew, J.~Tobin, P.~Abbeel, W.~Zaremba.
+\newblock Hindsight Experience Replay.
+\newblock \emph{NeurIPS}, 2017.
+
+\bibitem{plappert18}
+M.~Plappert, M.~Andrychowicz, A.~Ray, B.~McGrew, B.~Baker, G.~Powell,
+J.~Schneider, J.~Tobin, M.~Chociej, P.~Welinder, V.~Kumar, W.~Zaremba.
+\newblock Multi-Goal Reinforcement Learning: Challenging Robotics Environments
+and Request for Research.
+\newblock \emph{arXiv:1802.09464}, 2018.
+\end{thebibliography}
+
+\end{document}
