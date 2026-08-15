@@ -529,7 +529,7 @@ reproducible manner.
   \item Did you specify all the training details (e.g., data splits, hyperparameters, how they were chosen)?
     \answerYes{[Section~\ref{sec:setup}; hyperparameters taken from RL Baselines3 Zoo, no search performed -- Section~\ref{sec:contribution}]}
   \item Did you run at least 10 repetitions of your method?
-    \answerYes{[10 seeds/condition for both main comparisons; the ablation uses 5 seeds/setting, as specified in the proposal]}
+    \answerYes{[proposal specified 5 seeds/condition; we ran 10/condition for both main comparisons and 5/setting for the ablation (as specified)]}
   \item Did you report error bars (e.g., with respect to the random seed after running experiments multiple times)?
     \answerYes{[figures show per-seed traces and mean $\pm$ range/p10--p90 bands; per-seed outlier variance discussed explicitly in Section~\ref{sec:discussion}]}
   \item Did you include the total amount of compute and the type of resources used (e.g., type of GPUs, internal cluster, or cloud provider)?
