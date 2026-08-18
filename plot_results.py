@@ -165,6 +165,9 @@ def fig_success_rate(data, task, out_dir: Path):
         ax.plot(d["timesteps"], mean, color=color, lw=2,
                 label=f"{LABELS[cond]} (n={len(d['seeds'])})")
         ax.fill_between(d["timesteps"], mean - std, mean + std, color=color, alpha=BAND_ALPHA)
+    ax.axhline(SUCCESS_TARGET, color=GRID_COLOR, ls=(0, (4, 3)), lw=1.2, zorder=0.5)
+    ax.text(0.992, SUCCESS_TARGET, "90% ", transform=ax.get_yaxis_transform(),
+            ha="right", va="bottom", fontsize=7.5, color="#898781")
     ax.set_xlabel("environment steps")
     ax.set_ylabel("evaluation success rate")
     ax.set_title(f"SAC on {TASK_ENV_NAME[task]}: " + " vs ".join(LABELS[c] for c in conditions if c in data))
@@ -328,6 +331,9 @@ def fig_ablation(runs_dir: Path, out_dir: Path):
         ax.plot(d["timesteps"], mean, color=color, lw=2,
                 label=f"n_sampled_goal={nsg} (n={d['success'].shape[0]})")
         ax.fill_between(d["timesteps"], mean - std, mean + std, color=color, alpha=BAND_ALPHA)
+    ax.axhline(SUCCESS_TARGET, color=GRID_COLOR, ls=(0, (4, 3)), lw=1.2, zorder=0.5)
+    ax.text(0.992, SUCCESS_TARGET, "90% ", transform=ax.get_yaxis_transform(),
+            ha="right", va="bottom", fontsize=7.5, color="#898781")
     ax.set_xlabel("environment steps")
     ax.set_ylabel("evaluation success rate")
     ax.set_title("FetchPush-v3 sparse+HER: relabeling-ratio ablation")

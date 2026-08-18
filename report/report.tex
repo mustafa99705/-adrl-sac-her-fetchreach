@@ -315,13 +315,24 @@ task being learned at all.
 
 \begin{figure}[h]
 \centering
-\includegraphics[width=0.65\textwidth]{figures/fig4_push_entropy_coef.pdf}
-\caption{SAC's auto-tuned entropy coefficient $\alpha$ on FetchPush-v3 (log
-scale, mean $\pm$ 1 std.\ dev.\ over 10 seeds). Without HER, $\alpha$ collapses
-$\sim$21$\times$ from $6.2\times10^{-3}$ to $2.9\times10^{-4}$ while the
-policy is still failing. With HER, $\alpha$ stays roughly flat around
-$2.2$--$2.3\times10^{-3}$ throughout, about $8\times$ higher than sparse's
-final value.}
+\begin{subfigure}{0.48\textwidth}
+\includegraphics[width=\textwidth]{figures/fig4_reach_entropy_coef.pdf}
+\caption{FetchReach-v3}
+\end{subfigure}
+\hfill
+\begin{subfigure}{0.48\textwidth}
+\includegraphics[width=\textwidth]{figures/fig4_push_entropy_coef.pdf}
+\caption{FetchPush-v3}
+\end{subfigure}
+\caption{SAC's auto-tuned entropy coefficient $\alpha$ (log scale, mean
+$\pm$ 1 std.\ dev.\ over 10 seeds). On Reach (a), $\alpha$ collapses for
+\emph{every} condition ($\approx0.368 \to \approx3.1$--$3.2\times10^{-4}$)
+in step with the task being solved --- a healthy collapse. On Push (b),
+without HER $\alpha$ collapses $\sim$21$\times$
+($6.2\times10^{-3}\to2.9\times10^{-4}$) \emph{while the policy is still
+failing}; with HER it stays roughly flat around $2.2$--$2.3\times10^{-3}$,
+about $8\times$ higher than sparse's final value --- the same collapse
+pattern, but only healthy in one of the two cases.}
 \label{fig:entropy}
 \end{figure}
 
@@ -336,9 +347,9 @@ transitions from the start, the critic receives a much denser learning
 signal, and $\alpha$ is kept an order of magnitude higher for the full
 training run, coinciding with the exploration needed to eventually discover
 successful pushes. Notably, entropy collapse \emph{per se} is not the
-problem: on Reach, $\alpha$ collapses similarly for every condition
-(from $\approx0.368$ to $\approx3.1$--$3.2\times10^{-4}$), but there it
-coincides with the task actually being solved --- collapse tracks genuine
+problem: on Reach (Figure~\ref{fig:entropy}a), $\alpha$ collapses similarly
+for every condition (from $\approx0.368$ to $\approx3.1$--$3.2\times10^{-4}$),
+but there it coincides with the task actually being solved --- collapse tracks genuine
 competence in one case and precedes it in the other. We note this evidence
 is an association between HER and healthier entropy dynamics, not a
 controlled test that isolates entropy as the causal mechanism.
