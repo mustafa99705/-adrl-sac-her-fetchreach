@@ -172,7 +172,7 @@ def fig_success_rate(data, task, out_dir: Path):
     ax.set_ylabel("evaluation success rate")
     ax.set_title(f"SAC on {TASK_ENV_NAME[task]}: " + " vs ".join(LABELS[c] for c in conditions if c in data))
     ax.set_ylim(-0.05, 1.05)
-    ax.legend(loc="lower right", fontsize=8)
+    ax.legend(loc="best", fontsize=8)
     ax.grid(alpha=1.0, color=GRID_COLOR, lw=0.7)
     fig.tight_layout()
     for ext in ("png", "pdf"):
@@ -224,7 +224,7 @@ def fig_train_success(runs_dir: Path, task: str, data, out_dir: Path):
     ax.set_ylabel("training success rate (rolling 100 episodes)")
     ax.set_title(f"{TASK_ENV_NAME[task]}: training-time success (exploration policy)")
     ax.set_ylim(-0.05, 1.05)
-    ax.legend(loc="lower right", fontsize=8)
+    ax.legend(loc="best", fontsize=8)
     ax.grid(alpha=1.0, color=GRID_COLOR, lw=0.7)
     fig.tight_layout()
     for ext in ("png", "pdf"):
@@ -338,7 +338,7 @@ def fig_ablation(runs_dir: Path, out_dir: Path):
     ax.set_ylabel("evaluation success rate")
     ax.set_title("FetchPush-v3 sparse+HER: relabeling-ratio ablation")
     ax.set_ylim(-0.05, 1.05)
-    ax.legend(loc="lower right", fontsize=8)
+    ax.legend(loc="best", fontsize=8)
     ax.grid(alpha=1.0, color=GRID_COLOR, lw=0.7)
     fig.tight_layout()
     for ext in ("png", "pdf"):
