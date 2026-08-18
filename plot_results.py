@@ -26,16 +26,38 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
+# Quiet, considered chart chrome: no top/right spines, recessive muted-gray
+# axis text, hairline gridlines (drawn per-axes below with GRID_COLOR).
+plt.rcParams.update({
+    "font.family": "sans-serif",
+    "font.sans-serif": ["DejaVu Sans", "Arial", "Helvetica"],
+    "axes.spines.top": False,
+    "axes.spines.right": False,
+    "axes.edgecolor": "#c3c2b7",
+    "axes.labelcolor": "#52514e",
+    "xtick.color": "#898781",
+    "ytick.color": "#898781",
+    "axes.axisbelow": True,
+    "legend.frameon": False,
+    "figure.facecolor": "white",
+    "axes.facecolor": "white",
+})
+
 TASK_CONDITIONS = {
     "reach": ["dense", "sparse", "dense_her", "sparse_her"],
     "push": ["sparse", "sparse_her"],
 }
 TASK_ENV_NAME = {"reach": "FetchReach-v3", "push": "FetchPush-v3"}
+# Validated categorical palette (fixed slot order, CVD-safe on adjacent
+# pairs): slot1 blue, slot2 orange, slot3 aqua, slot4 yellow. Assigned once
+# per condition identity and reused across every figure, so e.g. sparse+HER
+# is the same yellow whether it appears alongside all four conditions
+# (Reach) or just sparse (Push).
 COLORS = {
-    "dense": "#1f77b4",
-    "sparse": "#d62728",
-    "dense_her": "#9467bd",
-    "sparse_her": "#2ca02c",
+    "dense": "#2a78d6",
+    "sparse": "#eb6834",
+    "dense_her": "#1baf7a",
+    "sparse_her": "#eda100",
 }
 LABELS = {
     "dense": "dense",
@@ -43,8 +65,11 @@ LABELS = {
     "dense_her": "dense + HER",
     "sparse_her": "sparse + HER",
 }
+GRID_COLOR = "#e1e0d9"
+SEED_LINE_ALPHA = 0.12
+BAND_ALPHA = 0.12
 ABLATION_NSG = (1, 4, 8)
-ABLATION_COLORS = {1: "#ff7f0e", 4: "#2ca02c", 8: "#17becf"}
+ABLATION_COLORS = {1: "#2a78d6", 4: "#008300", 8: "#4a3aa7"}
 SUCCESS_TARGET = 0.9
 
 
@@ -135,17 +160,17 @@ def fig_success_rate(data, task, out_dir: Path):
         d = data[cond]
         color = COLORS[cond]
         for row in d["success"]:
-            ax.plot(d["timesteps"], row, color=color, alpha=0.2, lw=0.7)
+            ax.plot(d["timesteps"], row, color=color, alpha=SEED_LINE_ALPHA, lw=0.6)
         mean, std = d["success"].mean(axis=0), d["success"].std(axis=0)
         ax.plot(d["timesteps"], mean, color=color, lw=2,
                 label=f"{LABELS[cond]} (n={len(d['seeds'])})")
-        ax.fill_between(d["timesteps"], mean - std, mean + std, color=color, alpha=0.15)
+        ax.fill_between(d["timesteps"], mean - std, mean + std, color=color, alpha=BAND_ALPHA)
     ax.set_xlabel("environment steps")
     ax.set_ylabel("evaluation success rate")
     ax.set_title(f"SAC on {TASK_ENV_NAME[task]}: " + " vs ".join(LABELS[c] for c in conditions if c in data))
     ax.set_ylim(-0.05, 1.05)
     ax.legend(loc="lower right", fontsize=8)
-    ax.grid(alpha=0.3)
+    ax.grid(alpha=1.0, color=GRID_COLOR, lw=0.7)
     fig.tight_layout()
     for ext in ("png", "pdf"):
         fig.savefig(out_dir / f"fig1_{task}_success_rate.{ext}", dpi=200)
@@ -159,10 +184,10 @@ def fig_returns(data, task, out_dir: Path):
         d = data[cond]
         color = COLORS[cond]
         for row in d["returns"]:
-            ax.plot(d["timesteps"], row, color=color, alpha=0.2, lw=0.7)
+            ax.plot(d["timesteps"], row, color=color, alpha=SEED_LINE_ALPHA, lw=0.6)
         mean, std = d["returns"].mean(axis=0), d["returns"].std(axis=0)
         ax.plot(d["timesteps"], mean, color=color, lw=2)
-        ax.fill_between(d["timesteps"], mean - std, mean + std, color=color, alpha=0.15)
+        ax.fill_between(d["timesteps"], mean - std, mean + std, color=color, alpha=BAND_ALPHA)
         if cond.startswith("sparse"):
             ax.axhline(-50, color="gray", ls="--", lw=1)
             ax.text(0.02, 0.06, "always-fail = -50", transform=ax.transAxes,
@@ -170,7 +195,7 @@ def fig_returns(data, task, out_dir: Path):
         ax.set_ylabel("episode return")
         ax.set_title(f"{LABELS[cond]}")
         ax.set_xlabel("environment steps")
-        ax.grid(alpha=0.3)
+        ax.grid(alpha=1.0, color=GRID_COLOR, lw=0.7)
     fig.suptitle(f"{TASK_ENV_NAME[task]}: evaluation returns (scales not comparable across panels)")
     fig.tight_layout()
     for ext in ("png", "pdf"):
@@ -189,7 +214,7 @@ def fig_train_success(runs_dir: Path, task: str, data, out_dir: Path):
             if mon is None:
                 continue
             steps, rolling = mon
-            ax.plot(steps, rolling, color=color, alpha=0.4, lw=1,
+            ax.plot(steps, rolling, color=color, alpha=0.35, lw=0.8,
                     label=LABELS[cond] if not shown else None)
             shown = True
     ax.set_xlabel("environment steps")
@@ -197,7 +222,7 @@ def fig_train_success(runs_dir: Path, task: str, data, out_dir: Path):
     ax.set_title(f"{TASK_ENV_NAME[task]}: training-time success (exploration policy)")
     ax.set_ylim(-0.05, 1.05)
     ax.legend(loc="lower right", fontsize=8)
-    ax.grid(alpha=0.3)
+    ax.grid(alpha=1.0, color=GRID_COLOR, lw=0.7)
     fig.tight_layout()
     for ext in ("png", "pdf"):
         fig.savefig(out_dir / f"fig3_{task}_train_success.{ext}", dpi=200)
@@ -216,13 +241,13 @@ def fig_entropy_coef(diag_data, task, out_dir: Path):
         std = d["ent_coef"].std(axis=0)
         ax.plot(d["timesteps"], mean, color=color, lw=2,
                 label=f"{LABELS[cond]} (n={len(d['seeds'])})")
-        ax.fill_between(d["timesteps"], mean - std, mean + std, color=color, alpha=0.15)
+        ax.fill_between(d["timesteps"], mean - std, mean + std, color=color, alpha=BAND_ALPHA)
     ax.set_xlabel("environment steps")
     ax.set_ylabel(r"entropy coefficient $\alpha$ (auto-tuned)")
     ax.set_title(f"{TASK_ENV_NAME[task]}: SAC entropy coefficient over training")
     ax.set_yscale("log")
     ax.legend(loc="best", fontsize=8)
-    ax.grid(alpha=0.3, which="both")
+    ax.grid(alpha=1.0, color=GRID_COLOR, lw=0.7, which="both")
     fig.tight_layout()
     for ext in ("png", "pdf"):
         fig.savefig(out_dir / f"fig4_{task}_entropy_coef.{ext}", dpi=200)
@@ -253,7 +278,7 @@ def fig_goal_distance(diag_data, task, out_dir: Path):
         ax.set_xlabel("environment steps")
         ax.set_ylabel("|achieved goal - desired goal| in sampled minibatch (m)")
         ax.legend(loc="best", fontsize=8)
-        ax.grid(alpha=0.3)
+        ax.grid(alpha=1.0, color=GRID_COLOR, lw=0.7)
     fig.suptitle(f"{TASK_ENV_NAME[task]}: goal-distance of trained-on transitions", fontsize=12)
     fig.tight_layout()
     for ext in ("png", "pdf"):
@@ -302,13 +327,13 @@ def fig_ablation(runs_dir: Path, out_dir: Path):
         mean, std = d["success"].mean(axis=0), d["success"].std(axis=0)
         ax.plot(d["timesteps"], mean, color=color, lw=2,
                 label=f"n_sampled_goal={nsg} (n={d['success'].shape[0]})")
-        ax.fill_between(d["timesteps"], mean - std, mean + std, color=color, alpha=0.15)
+        ax.fill_between(d["timesteps"], mean - std, mean + std, color=color, alpha=BAND_ALPHA)
     ax.set_xlabel("environment steps")
     ax.set_ylabel("evaluation success rate")
     ax.set_title("FetchPush-v3 sparse+HER: relabeling-ratio ablation")
     ax.set_ylim(-0.05, 1.05)
     ax.legend(loc="lower right", fontsize=8)
-    ax.grid(alpha=0.3)
+    ax.grid(alpha=1.0, color=GRID_COLOR, lw=0.7)
     fig.tight_layout()
     for ext in ("png", "pdf"):
         fig.savefig(out_dir / f"fig6_push_ablation.{ext}", dpi=200)
