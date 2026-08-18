@@ -222,9 +222,10 @@ $\mathrm{AUC}\in[0,1]$.
 \centering
 \caption{As specified in the proposal: 5 seeds/condition.}
 \label{tab:spec5}
+\footnotesize
 \begin{tabular}{llccccc}
 \toprule
-Task & Condition & Mean success & Median success & Seeds $\geq$90\% & Median steps to 90\% & AUC \\
+Task & Condition & Mean success & Median success & Seeds $\geq$90\% & Steps to 90\% & AUC \\
 \midrule
 Reach & dense       & 100.0\% & 100.0\% & 5/5 & 6{,}000  & 0.944 \\
 Reach & dense + HER & 100.0\% & 100.0\% & 5/5 & 6{,}000  & 0.945 \\
@@ -249,9 +250,10 @@ and show the conclusion is unchanged, not seed-count-dependent.
 (FetchReach-v3). All conditions solve the task; HER mainly affects how
 fast.}
 \label{tab:reach}
+\footnotesize
 \begin{tabular}{lccccc}
 \toprule
-Condition & Mean success & Median success & Seeds $\geq$90\% & Median steps to 90\% & AUC \\
+Condition & Mean success & Median success & Seeds $\geq$90\% & Steps to 90\% & AUC \\
 \midrule
 dense       & 100.0\% & 100.0\% & 10/10 & 6{,}000  & 0.947 \\
 dense + HER & 100.0\% & 100.0\% & 10/10 & 6{,}000  & 0.945 \\
@@ -267,9 +269,10 @@ sparse + HER& 100.0\% & 100.0\% & 10/10 & 8{,}000  & 0.929 \\
 (FetchPush-v3). Sparse SAC essentially fails to learn; HER recovers most of
 the task.}
 \label{tab:push}
+\footnotesize
 \begin{tabular}{lccccc}
 \toprule
-Condition & Mean success & Median success & Seeds $\geq$90\% & Median steps to 90\% & AUC \\
+Condition & Mean success & Median success & Seeds $\geq$90\% & Steps to 90\% & AUC \\
 \midrule
 sparse       & 5.4\%  & 6.0\%  & 0/10 & --- (never) & 0.067 \\
 sparse + HER & 90.7\% & 99.0\% & 9/10 & 350{,}000   & 0.610 \\
@@ -410,9 +413,10 @@ specified range.
 \caption{HER relabeling-ratio ablation, FetchPush-v3 sparse+HER, 5 seeds/setting
 (rows 1--4 are the specified range; row 8 is the extension).}
 \label{tab:ablation}
+\footnotesize
 \begin{tabular}{lccccc}
 \toprule
-$n_{\text{sampled\_goal}}$ & Mean success & Median success & Seeds $\geq$90\% & Median steps to 90\% & AUC \\
+$n_{\text{sampled\_goal}}$ & Mean success & Median success & Seeds $\geq$90\% & Steps to 90\% & AUC \\
 \midrule
 1 & 84.0\% & 99.0\% & 4/5 & 400{,}000 & 0.566 \\
 4 & 82.8\% & 99.0\% & 4/5 & 380{,}000 & 0.553 \\
