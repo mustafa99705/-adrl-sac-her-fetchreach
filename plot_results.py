@@ -230,6 +230,11 @@ def fig_entropy_coef(diag_data, task, out_dir: Path):
 
 
 def fig_goal_distance(diag_data, task, out_dir: Path):
+    """Plot p10/p50/p90 as three distinct lines rather than a median+band: a
+    shaded p10-p90 band visually hides that the median stays pinned near
+    zero (HER-relabeled transitions) while the upper percentiles move
+    independently as training progresses -- the actual curriculum signal.
+    """
     her_conditions = [c for c in TASK_CONDITIONS[task] if c.endswith("_her") and c in diag_data]
     if not her_conditions:
         return
@@ -241,8 +246,9 @@ def fig_goal_distance(diag_data, task, out_dir: Path):
         p10 = d["goal_dist_p10"].mean(axis=0)
         p50 = d["goal_dist_p50"].mean(axis=0)
         p90 = d["goal_dist_p90"].mean(axis=0)
-        ax.plot(d["timesteps"], p50, color=color, lw=2, label="median")
-        ax.fill_between(d["timesteps"], p10, p90, color=color, alpha=0.2, label="p10-p90")
+        ax.plot(d["timesteps"], p90, color=color, lw=1.5, ls=":", alpha=0.8, label="p90")
+        ax.plot(d["timesteps"], p50, color=color, lw=2, label="median (p50)")
+        ax.plot(d["timesteps"], p10, color=color, lw=1.5, ls="--", alpha=0.8, label="p10")
         ax.set_title(f"{LABELS[cond]} (n={len(d['seeds'])})")
         ax.set_xlabel("environment steps")
         ax.set_ylabel("|achieved goal - desired goal| in sampled minibatch (m)")
@@ -324,6 +330,7 @@ def fig_ablation(runs_dir: Path, out_dir: Path):
     print("\n=== ablation (FetchPush-v3 sparse+HER, n_sampled_goal) ===")
     print(df.groupby("n_sampled_goal").agg(
         final_success_mean=("final_success", "mean"),
+        final_success_median=("final_success", "median"),
         auc_mean=("success_auc", "mean"),
         steps_to_90pct_median=("steps_to_90pct", "median"),
     ).to_string())
@@ -349,6 +356,7 @@ def summarize(all_data, out_dir: Path):
 
     agg = df.groupby(["task", "condition"]).agg(
         final_success_mean=("final_success", "mean"),
+        final_success_median=("final_success", "median"),
         final_success_std=("final_success", "std"),
         auc_mean=("success_auc", "mean"),
         steps_to_90pct_median=("steps_to_90pct", "median"),

@@ -204,9 +204,13 @@ desired goal$\rVert$ in sampled replay-buffer minibatches, both every
 
 \subsection{Main comparison: does HER's benefit grow with task difficulty?}
 
-Metric definitions used in all tables below: \emph{Final success} is the
-mean evaluation success rate over the last 5 evaluation points of a run.
-\emph{Median steps to 90\%} is computed only over seeds whose evaluation
+Metric definitions used in all tables below: per-seed \emph{success} is the
+mean evaluation success rate over the last 5 evaluation points of a run;
+\emph{Mean/Median success} aggregate this across seeds within a condition
+(we report both because Push has occasional catastrophic-failure seeds that
+pull the mean down without affecting the median -- see
+Section~\ref{sec:discussion}). \emph{Median steps to 90\%} is computed only
+over seeds whose evaluation
 curve reaches 90\% success at some point; the count of seeds that do so is
 reported separately in the \emph{Seeds $\geq$90\%} column, and seeds that
 never reach it are excluded from the median (not treated as $\infty$).
@@ -218,16 +222,16 @@ $\mathrm{AUC}\in[0,1]$.
 \centering
 \caption{As specified in the proposal: 5 seeds/condition.}
 \label{tab:spec5}
-\begin{tabular}{llcccc}
+\begin{tabular}{llccccc}
 \toprule
-Task & Condition & Final success & Seeds $\geq$90\% & Median steps to 90\% & AUC \\
+Task & Condition & Mean success & Median success & Seeds $\geq$90\% & Median steps to 90\% & AUC \\
 \midrule
-Reach & dense       & 100.0\% & 5/5 & 6{,}000  & 0.944 \\
-Reach & dense + HER & 100.0\% & 5/5 & 6{,}000  & 0.945 \\
-Reach & sparse      & 98.8\%  & 5/5 & 22{,}000 & 0.804 \\
-Reach & sparse + HER& 100.0\% & 5/5 & 8{,}000  & 0.931 \\
-Push  & sparse       & 6.2\%  & 0/5 & --- (never) & 0.065 \\
-Push  & sparse + HER & 82.8\% & 4/5 & 380{,}000   & 0.553 \\
+Reach & dense       & 100.0\% & 100.0\% & 5/5 & 6{,}000  & 0.944 \\
+Reach & dense + HER & 100.0\% & 100.0\% & 5/5 & 6{,}000  & 0.945 \\
+Reach & sparse      & 98.8\%  & 100.0\% & 5/5 & 22{,}000 & 0.804 \\
+Reach & sparse + HER& 100.0\% & 100.0\% & 5/5 & 8{,}000  & 0.931 \\
+Push  & sparse       & 6.2\%  & 6.0\%  & 0/5 & --- (never) & 0.065 \\
+Push  & sparse + HER & 82.8\% & 99.0\% & 4/5 & 380{,}000   & 0.553 \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -245,14 +249,14 @@ and show the conclusion is unchanged, not seed-count-dependent.
 (FetchReach-v3). All conditions solve the task; HER mainly affects how
 fast.}
 \label{tab:reach}
-\begin{tabular}{lcccc}
+\begin{tabular}{lccccc}
 \toprule
-Condition & Final success & Seeds $\geq$90\% & Median steps to 90\% & AUC \\
+Condition & Mean success & Median success & Seeds $\geq$90\% & Median steps to 90\% & AUC \\
 \midrule
-dense       & 100.0\% & 10/10 & 6{,}000  & 0.947 \\
-dense + HER & 100.0\% & 10/10 & 6{,}000  & 0.945 \\
-sparse      & 99.4\%  & 10/10 & 22{,}000 & 0.826 \\
-sparse + HER& 100.0\% & 10/10 & 8{,}000  & 0.929 \\
+dense       & 100.0\% & 100.0\% & 10/10 & 6{,}000  & 0.947 \\
+dense + HER & 100.0\% & 100.0\% & 10/10 & 6{,}000  & 0.945 \\
+sparse      & 99.4\%  & 100.0\% & 10/10 & 22{,}000 & 0.826 \\
+sparse + HER& 100.0\% & 100.0\% & 10/10 & 8{,}000  & 0.929 \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -263,12 +267,12 @@ sparse + HER& 100.0\% & 10/10 & 8{,}000  & 0.929 \\
 (FetchPush-v3). Sparse SAC essentially fails to learn; HER recovers most of
 the task.}
 \label{tab:push}
-\begin{tabular}{lcccc}
+\begin{tabular}{lccccc}
 \toprule
-Condition & Final success & Seeds $\geq$90\% & Median steps to 90\% & AUC \\
+Condition & Mean success & Median success & Seeds $\geq$90\% & Median steps to 90\% & AUC \\
 \midrule
-sparse       & 5.4\%  & 0/10 & --- (never) & 0.067 \\
-sparse + HER & 90.7\% & 9/10 & 350{,}000   & 0.610 \\
+sparse       & 5.4\%  & 6.0\%  & 0/10 & --- (never) & 0.067 \\
+sparse + HER & 90.7\% & 99.0\% & 9/10 & 350{,}000   & 0.610 \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -285,7 +289,8 @@ sparse + HER & 90.7\% & 9/10 & 350{,}000   & 0.610 \\
 \caption{FetchPush-v3}
 \end{subfigure}
 \caption{Evaluation success rate vs.\ environment steps (thin lines: individual
-seeds; thick line: mean; band: seed range). On Reach, all HER and dense
+seeds; thick line: mean; band: mean $\pm$ 1 std.\ dev.\ across seeds). On
+Reach, all HER and dense
 conditions overlap and converge fast, with plain sparse trailing but still
 reaching near-perfect success. On Push, sparse SAC (red) never rises above
 noise around 5--10\%, while sparse+HER (green) climbs steadily to $\sim$90\%.}
@@ -300,8 +305,10 @@ Figure~\ref{fig:main}b confirm hypothesis (ii) sharply: without HER, SAC
 extracts essentially nothing from the sparse pushing reward over a full
 million steps (5.4\% final success, close to the pre-training baseline),
 while HER on the identical reward signal reaches
-90.7\% success. HER's benefit is not a speedup here --- it is the difference
-between the task being learned at all.
+90.7\% mean success (99.0\% median --- the gap between the two is one
+catastrophic-failure seed, discussed in Section~\ref{sec:discussion}).
+HER's benefit is not a speedup here --- it is the difference between the
+task being learned at all.
 
 \subsection{Mechanism: why does HER help?}
 \label{sec:mechanism}
@@ -310,7 +317,7 @@ between the task being learned at all.
 \centering
 \includegraphics[width=0.65\textwidth]{figures/fig4_push_entropy_coef.pdf}
 \caption{SAC's auto-tuned entropy coefficient $\alpha$ on FetchPush-v3 (log
-scale, mean $\pm$ range over 10 seeds). Without HER, $\alpha$ collapses
+scale, mean $\pm$ 1 std.\ dev.\ over 10 seeds). Without HER, $\alpha$ collapses
 $\sim$21$\times$ from $6.2\times10^{-3}$ to $2.9\times10^{-4}$ while the
 policy is still failing. With HER, $\alpha$ stays roughly flat around
 $2.2$--$2.3\times10^{-3}$ throughout, about $8\times$ higher than sparse's
@@ -349,8 +356,10 @@ controlled test that isolates entropy as the causal mechanism.
 \includegraphics[width=\linewidth,height=4.3cm,keepaspectratio]{figures/fig5_push_goal_distance.pdf}
 \caption{FetchPush-v3 (sparse+HER)}
 \end{subfigure}
-\caption{Median (line) and p10--p90 band of $\lVert$achieved $-$ desired
-goal$\rVert$ across transitions actually sampled for training.}
+\caption{p10/median/p90 of $\lVert$achieved $-$ desired goal$\rVert$ across
+transitions actually sampled for training, plotted as three separate lines
+(rather than a shaded band) so a median pinned near zero does not visually
+mask movement in the upper percentiles.}
 \label{fig:curriculum}
 \end{figure}
 
@@ -367,9 +376,11 @@ these, per \texttt{HerDiagnosticsCallback}'s measured percentiles), which
 pins the median near zero for the entire run and hides the curriculum in the
 remaining $\sim$20\% of
 real-goal transitions. Those real-goal transitions do show a mild version of
-the same effect --- the p10--p90 band widens from $\approx$0.18\,m to a peak
-of $\approx$0.21--0.215\,m by $\sim$150--250k steps as the policy starts
-reaching more diverse states, then narrows back to $\approx$0.18\,m by 1M
+the same effect: since p10 and the median both stay pinned near zero
+throughout (dominated by relabeled samples), it is the \emph{p90 line}
+specifically that carries this signal --- rising from $\approx$0.18\,m to a
+peak of $\approx$0.21--0.215\,m by $\sim$150--250k steps as the policy starts
+reaching more diverse states, then falling back to $\approx$0.18\,m by 1M
 steps --- but it is a second-order effect on Push, not the dominant pattern
 visible in the raw metric. We report this as an honest limitation of the
 metric rather than evidence against hypothesis (iii): the entropy-coefficient
@@ -388,13 +399,13 @@ specified range.
 \caption{HER relabeling-ratio ablation, FetchPush-v3 sparse+HER, 5 seeds/setting
 (rows 1--4 are the specified range; row 8 is the extension).}
 \label{tab:ablation}
-\begin{tabular}{lcccc}
+\begin{tabular}{lccccc}
 \toprule
-$n_{\text{sampled\_goal}}$ & Final success & Seeds $\geq$90\% & Median steps to 90\% & AUC \\
+$n_{\text{sampled\_goal}}$ & Mean success & Median success & Seeds $\geq$90\% & Median steps to 90\% & AUC \\
 \midrule
-1 & 84.0\% & 4/5 & 400{,}000 & 0.566 \\
-4 & 82.8\% & 4/5 & 380{,}000 & 0.553 \\
-8 & 88.6\% & 4/5 & 260{,}000 & 0.637 \\
+1 & 84.0\% & 99.0\% & 4/5 & 400{,}000 & 0.566 \\
+4 & 82.8\% & 99.0\% & 4/5 & 380{,}000 & 0.553 \\
+8 & 88.6\% & 99.0\% & 4/5 & 260{,}000 & 0.637 \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -403,7 +414,7 @@ $n_{\text{sampled\_goal}}$ & Final success & Seeds $\geq$90\% & Median steps to 
 \centering
 \includegraphics[width=0.65\textwidth]{figures/fig6_push_ablation.pdf}
 \caption{Success rate by HER relabeling ratio on FetchPush-v3 (mean over 5
-seeds, band: p10--p90).}
+seeds, band: mean $\pm$ 1 std.\ dev.).}
 \label{fig:ablation}
 \end{figure}
 
@@ -418,8 +429,12 @@ seed out of five that fails to reach 90\% (final success 0.20--0.45 for that
 seed, vs.\ $\geq$0.96 for the other four in the same group; visible as the
 wide lower band in Figure~\ref{fig:ablation}) --- suggesting per-seed
 optimization instability on this harder task is a bigger source of variance
-than the relabeling ratio itself. We conclude the benefit of more relabeling
-saturates quickly on this task rather than scaling with $k$.
+than the relabeling ratio itself. This is underscored by Table~\ref{tab:ablation}'s
+median column: the median final success is identically 99.0\% for
+$n_{\text{sampled\_goal}}\in\{1,4,8\}$ --- the mean differences between
+settings are driven entirely by which single seed happened to fail, not by
+a real difference in typical performance. We conclude the benefit of more
+relabeling saturates quickly on this task rather than scaling with $k$.
 
 \section{Discussion and Limitations}
 \label{sec:discussion}
@@ -433,8 +448,9 @@ overconfident entropy collapse that plain sparse-reward SAC falls into when
 it rarely observes a success. We note three limitations. First, both
 FetchPush conditions show occasional catastrophic-failure seeds (final
 success as low as 0.20 despite HER); with only 10 (main grid) or 5
-(ablation) seeds per setting, these outliers noticeably affect the mean and
-should be reported alongside the median in any follow-up. Second, the
+(ablation) seeds per setting, these outliers noticeably pull down the mean
+without affecting the median (Tables~\ref{tab:push} and \ref{tab:ablation}
+report both for exactly this reason). Second, the
 goal-distance curriculum signal, clear on Reach, is largely masked on Push by
 the relabeling ratio itself (Section~\ref{sec:mechanism}); a cleaner
 mechanism metric for harder tasks would track only the non-relabeled
