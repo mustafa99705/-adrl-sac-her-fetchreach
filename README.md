@@ -78,8 +78,8 @@ environments) has a reset bug: `MujocoFetchEnv._reset_sim` calls
 `mj_resetData` — restoring the **XML default** initial pose — but never
 restores the initial state captured at construction. On Reach this meant
 every episode started with the gripper ~0.55 m from the goal-sampling center
-instead of the documented ≤ 0.26 m, making the task ~2.5× harder than
-specified. Upstream fixed exactly this in the v4 environments
+instead of the documented ≤ 0.26 m, a ~2.1× larger initial offset
+(0.55/0.26). Upstream fixed exactly this in the v4 environments
 (gymnasium-robotics 1.4.0), which however dropped the `-v3` IDs we depend on.
 
 `env_fix.py` backports the upstream fix verbatim (restore

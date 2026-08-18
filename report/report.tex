@@ -37,7 +37,7 @@ steps to 90\% success). On the hard task, plain sparse-reward SAC never
 learns (5--6\% final success, 0 seeds above 90\%), while HER on the identical
 sparse signal reaches 83--91\% success --- confirming that HER's benefit
 grows sharply with task difficulty. Tracking SAC's auto-tuned entropy
-coefficient explains why: without HER it collapses toward zero while the
+coefficient offers a plausible explanation: without HER it collapses toward zero while the
 policy is still failing (premature convergence), whereas with HER it stays an
 order of magnitude higher throughout training. A relabeling-ratio ablation
 ($n_{\text{sampled\_goal}} \in \{1,4,8\}$) shows this benefit saturates
@@ -94,8 +94,8 @@ configuration; (3) \texttt{HerDiagnosticsCallback}, which logs the
 entropy-coefficient and goal-distance-percentile trajectories used for the
 mechanism analysis in Section~\ref{sec:mechanism} --- this diagnostic is not
 part of Stable-Baselines3 and was written for this project; (4) designing and
-running all 70 training runs, including the pilot used to calibrate the
-FetchPush step budget, and the analysis/plotting pipeline
+running all 70 training runs, plus the separate 2-run pilot used to calibrate
+the FetchPush step budget, and the analysis/plotting pipeline
 (\texttt{plot\_results.py}); and (5) the interpretation in
 Section~\ref{sec:results}, including the entropy-collapse account of why HER
 helps and the finding that relabeling-ratio benefit saturates.
@@ -103,9 +103,10 @@ helps and the finding that relabeling-ratio benefit saturates.
 \section{Approach}
 We compare four conditions --- dense SAC, dense SAC+HER, sparse SAC, and
 sparse SAC+HER --- on \texttt{FetchReach-v3}, a relatively simple reaching
-task, and on \texttt{FetchPush-v3}, where the robot must push an object to a
+task. On \texttt{FetchPush-v3}, where the robot must push an object to a
 target location and sparse-reward learning is known to be substantially
-harder~\cite{andrychowicz17}. Hyperparameters are identical across task,
+harder~\cite{andrychowicz17}, we focus on the two central sparse-reward
+conditions, sparse SAC and sparse SAC+HER. Hyperparameters are identical across task,
 reward type, and HER on/off, so that the reward signal / relabeling strategy
 is the only experimental variable within each comparison. We tested three
 hypotheses stated in the project proposal: (i) on the simple reaching task,
@@ -114,9 +115,10 @@ reaches the goal on its own; (ii) on the harder pushing task, HER is expected
 to substantially improve learning performance; (iii) HER's effect is visible
 in the training dynamics, e.g.\ in the evolution of SAC's entropy coefficient
 and in the distribution of relabeled goals, forming an implicit curriculum.
-Section~\ref{sec:results} reports evidence for all three --- and, for (ii),
-an effect considerably larger than "substantial": HER turned out to be the
-difference between the task being learned at all.
+Section~\ref{sec:results} strongly supports hypotheses (i) and (ii) --- for
+(ii), an effect considerably larger than "substantial": HER turned out to be
+the difference between the task being learned at all --- and provides
+partial evidence for (iii).
 
 \begin{algorithm}[H]
     \caption{SAC with optional Hindsight Experience Replay}
@@ -144,6 +146,12 @@ difference between the task being learned at all.
     \end{algorithmic}
 \end{algorithm}
 
+Algorithm~\ref{alg:code} illustrates HER conceptually. In our
+Stable-Baselines3 implementation, only real transitions are stored in $R$;
+relabeled (virtual) transitions are generated on the fly when minibatches
+are sampled from \texttt{HerReplayBuffer}, not written to $R$ at rollout
+time (Section~\ref{sec:mechanism}).
+
 \section{Experimental Setup}
 \label{sec:setup}
 Both tasks use Stable-Baselines3 SAC~\cite{raffin21sb3} with a
@@ -160,8 +168,10 @@ object, within 5\,cm of the goal at episode end).
 
 We found and fixed a reset bug in \texttt{gymnasium-robotics} 1.3.x (the only
 release line exposing the \texttt{-v3} Fetch environments): the initial arm
-pose was not restored on reset, making the task $\sim$2.5$\times$ harder than
-documented. The fix (\texttt{env\_fix.py}) backports the official upstream
+pose was not restored on reset, so every episode started with the gripper
+$\sim$0.55\,m from the goal-sampling center instead of the documented
+$\leq$0.26\,m --- a $\sim$2.1$\times$ larger initial offset ($0.55/0.26$).
+The fix (\texttt{env\_fix.py}) backports the official upstream
 correction and is applied identically to every run below.
 
 \paragraph{Scope actually run.} The proposal specified 5 seeds per condition
@@ -193,6 +203,16 @@ desired goal$\rVert$ in sampled replay-buffer minibatches, both every
 \label{sec:results}
 
 \subsection{Main comparison: does HER's benefit grow with task difficulty?}
+
+Metric definitions used in all tables below: \emph{Final success} is the
+mean evaluation success rate over the last 5 evaluation points of a run.
+\emph{Median steps to 90\%} is computed only over seeds whose evaluation
+curve reaches 90\% success at some point; the count of seeds that do so is
+reported separately in the \emph{Seeds $\geq$90\%} column, and seeds that
+never reach it are excluded from the median (not treated as $\infty$).
+\emph{AUC} is the evaluation success-rate curve integrated (trapezoidal
+rule) over training steps and normalized by the total training budget, so
+$\mathrm{AUC}\in[0,1]$.
 
 \begin{table}[h]
 \centering
@@ -278,8 +298,8 @@ reduction in steps-to-90\% for the sparse reward (22{,}000 $\to$ 8{,}000),
 not the difference between success and failure. Table~\ref{tab:push} and
 Figure~\ref{fig:main}b confirm hypothesis (ii) sharply: without HER, SAC
 extracts essentially nothing from the sparse pushing reward over a full
-million steps (5.4\% final success, statistically indistinguishable from
-the pre-training baseline), while HER on the identical reward signal reaches
+million steps (5.4\% final success, close to the pre-training baseline),
+while HER on the identical reward signal reaches
 90.7\% success. HER's benefit is not a speedup here --- it is the difference
 between the task being learned at all.
 
@@ -298,21 +318,23 @@ final value.}
 \label{fig:entropy}
 \end{figure}
 
-Figure~\ref{fig:entropy} gives a direct mechanistic explanation for
-hypothesis (ii): SAC's entropy term is auto-tuned to keep the policy just
+Figure~\ref{fig:entropy} is consistent with a plausible mechanistic account
+of hypothesis (ii): SAC's entropy term is auto-tuned to keep the policy just
 exploratory enough to keep improving. Under plain sparse reward on Push, the
-critic never sees a rewarding transition to correct its estimates, so SAC
-settles into an overconfident, low-entropy policy despite \emph{not} having
-solved the task --- a premature-convergence failure mode. With HER supplying
-manufactured successes from the start, the critic has a genuine learning
+critic receives very few rewarding transitions to correct its estimates
+(only 5.4\% of episodes ever succeed), so SAC settles into an overconfident,
+low-entropy policy despite \emph{not} having solved the task --- a
+premature-convergence failure mode. With HER supplying relabeled successful
+transitions from the start, the critic receives a much denser learning
 signal, and $\alpha$ is kept an order of magnitude higher for the full
-training run, sustaining the exploration needed to eventually discover
+training run, coinciding with the exploration needed to eventually discover
 successful pushes. Notably, entropy collapse \emph{per se} is not the
 problem: on Reach, $\alpha$ collapses similarly for every condition
 (from $\approx0.368$ to $\approx3.1$--$3.2\times10^{-4}$), but there it
-coincides with the task actually being solved --- collapse is healthy when
-it tracks genuine competence, and unhealthy when, as in Push without HER, it
-happens instead of it.
+coincides with the task actually being solved --- collapse tracks genuine
+competence in one case and precedes it in the other. We note this evidence
+is an association between HER and healthier entropy dynamics, not a
+controlled test that isolates entropy as the causal mechanism.
 
 \begin{figure}[h]
 \centering
@@ -339,9 +361,11 @@ $\approx$0.016--0.020\,m for dense+HER and sparse+HER respectively --- a
 direct, visible curriculum: as the policy improves, the goals it is actually
 trained on get closer on average. On Push (Figure~\ref{fig:curriculum}b) the
 same signal is present but far less visible in this aggregate view: with
-$n_{\text{sampled\_goal}}=4$, roughly 4 of every 5 stored transitions are
-HER-relabeled (distance $\approx$0), which pins the median near zero for the
-entire run and hides the curriculum in the remaining $\sim$20\% of
+$n_{\text{sampled\_goal}}=4$, roughly 80\% of \emph{sampled} training
+transitions are HER-relabeled (empirically distance $\approx$0 for most of
+these, per \texttt{HerDiagnosticsCallback}'s measured percentiles), which
+pins the median near zero for the entire run and hides the curriculum in the
+remaining $\sim$20\% of
 real-goal transitions. Those real-goal transitions do show a mild version of
 the same effect --- the p10--p90 band widens from $\approx$0.18\,m to a peak
 of $\approx$0.21--0.215\,m by $\sim$150--250k steps as the policy starts
@@ -387,8 +411,8 @@ Table~\ref{tab:ablation} and Figure~\ref{fig:ablation} address the required
 ablation: relabeling ratio does not help monotonically or dramatically.
 $n_{\text{sampled\_goal}}=8$ learns somewhat faster (median steps-to-90\%
 260{,}000 vs.\ $\sim$380--400{,}000) and reaches a marginally higher final
-success and AUC, but $n_{\text{sampled\_goal}}=1$ and $4$ are statistically
-indistinguishable from each other, and all three settings converge to a
+success and AUC, but $n_{\text{sampled\_goal}}=1$ and $4$ show no clear
+separation with the available five seeds, and all three settings converge to a
 similar success region by 1M steps. Every setting also has exactly one
 seed out of five that fails to reach 90\% (final success 0.20--0.45 for that
 seed, vs.\ $\geq$0.96 for the other four in the same group; visible as the
@@ -401,11 +425,12 @@ saturates quickly on this task rather than scaling with $k$.
 \label{sec:discussion}
 The central result --- HER's benefit growing from a modest speedup on
 FetchReach to the difference between learning and not learning on
-FetchPush --- matches all three hypotheses from the proposal, and the
-entropy-coefficient trajectories (Section~\ref{sec:mechanism}) give a
-concrete mechanistic account of \emph{why}: HER prevents the premature,
+FetchPush --- strongly supports hypotheses (i) and (ii) from the proposal
+and provides partial support for (iii), and the entropy-coefficient
+trajectories (Section~\ref{sec:mechanism}) offer a plausible mechanistic
+account of \emph{why}: HER is associated with avoiding the premature,
 overconfident entropy collapse that plain sparse-reward SAC falls into when
-it never observes a success. We note three limitations. First, both
+it rarely observes a success. We note three limitations. First, both
 FetchPush conditions show occasional catastrophic-failure seeds (final
 success as low as 0.20 despite HER); with only 10 (main grid) or 5
 (ablation) seeds per setting, these outliers noticeably affect the mean and
@@ -442,9 +467,13 @@ sparse rewards, but \emph{when} and \emph{why} --- both questions are
 answered directly by the 70 runs above. \emph{When}: HER's contribution to
 SAC under sparse rewards is not fixed, it scales with task difficulty --- a
 modest accelerant on an easy task, the difference between success and
-failure on a harder one. \emph{Why}: this shift is traceable to HER
-sustaining healthy exploration (via SAC's entropy coefficient) where plain
-sparse rewards let the policy converge prematurely on a failing behavior.
+failure on a harder one. \emph{Why}: this shift is accompanied by markedly
+different entropy dynamics --- without HER, SAC's entropy coefficient
+collapses while the policy is still failing, whereas with HER it stays
+substantially higher throughout training, coinciding with successful
+learning rather than premature convergence on a failing behavior. This
+evidence is consistent with, but does not by itself establish, a causal
+exploration mechanism.
 More hindsight relabeling helps up to a point but saturates quickly, making
 $n_{\text{sampled\_goal}}=4$--$8$ a reasonable default rather than a setting
 worth aggressively tuning further.
