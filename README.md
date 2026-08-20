@@ -126,7 +126,6 @@ sbatch push_ablation_array.sbatch     # n_sampled_goal in {1,8}, 5 seeds (10 job
 # 3. after all jobs finish: figures + summary tables (login node)
 module load miniforge3 && conda activate ./env
 python plot_results.py                # writes results/figures/{fig1-6,*.csv}
-python results/build_gallery.py       # assembles results/gallery.html from the above
 ```
 
 A single run can also be launched directly:
@@ -157,10 +156,9 @@ percentiles), `best_model.zip`, `final_model.zip`, `config.json` (full config
 ## Results
 
 All runs: SLURM array on the `kisski` A100 partition (1 GPU per run). Full
-figures in `results/figures/` (also viewable assembled in
-`results/gallery.html`), per-seed numbers in `results/figures/summary.csv`
-and `ablation_summary.csv`. Full write-up with mechanism analysis in
-`report/report.tex`.
+figures in `results/figures/`, per-seed numbers in
+`results/figures/summary.csv` and `ablation_summary.csv`. Full write-up
+with mechanism analysis in `report/report.tex`.
 
 | | FetchReach-v3 (10 seeds/cond.) | | FetchPush-v3 (10 seeds/cond.) | |
 |---|---|---|---|---|
