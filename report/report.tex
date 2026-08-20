@@ -251,7 +251,7 @@ mean evaluation success rate over the last 5 evaluation points of a run;
 \emph{Mean/Median success} aggregate this across seeds within a condition
 (we report both because Push has occasional catastrophic-failure seeds
 that pull the mean down without affecting the median -- see
-Section~\ref{sec:discussion}). \emph{Median steps to 90\%} is computed
+Section~\ref{sec:limitations}). \emph{Median steps to 90\%} is computed
 only over seeds whose evaluation curve reaches 90\% success at some point;
 the count of seeds that do so is reported separately in the \emph{Seeds
 $\geq$90\%} column, and seeds that never reach it are excluded from the
@@ -353,7 +353,7 @@ budget, reaching only 5.4\% mean final success, close to the pre-training
 baseline. In contrast, HER on the identical sparse reward signal reaches
 90.7\% mean final success (99.0\% median). The gap between mean and
 median is caused by a catastrophic-failure seed, discussed in
-Section~\ref{sec:discussion}. Thus, HER's benefit on FetchPush is not
+Section~\ref{sec:limitations}. Thus, HER's benefit on FetchPush is not
 merely a speedup; within the training budget, it separates near-failure
 from successful learning.
 
@@ -513,18 +513,57 @@ sample efficiency, as seen most clearly for $n_{\text{sampled\_goal}} = 8$,
 but it does not consistently improve final task performance within the
 tested range.
 
-\section{Discussion and Limitations}
+\section{Discussion and Conclusion}
 \label{sec:discussion}
-The central result---HER's benefit growing from a modest speedup on
-FetchReach to the difference between near-failure and successful learning
-on FetchPush within the training budget---strongly supports hypotheses
-(i) and (ii) from the proposal and provides partial support for
-hypothesis (iii). The entropy-coefficient trajectories in
-Section~\ref{sec:mechanism} offer a plausible mechanistic account of this
-difference: HER is associated with avoiding the premature, overconfident
-entropy collapse observed for plain sparse-reward SAC when successful
-sparse-reward transitions remain very rare.
+This report set out to answer not only \emph{whether} HER helps SAC under
+sparse rewards, but also \emph{when} its contribution becomes substantial
+and \emph{why} it helps. Across the 70 main runs, HER's benefit increases
+markedly from FetchReach to FetchPush, growing from a modest speedup on
+the easy task to the difference between near-failure and successful
+learning on the hard task within the training budget. On FetchReach, HER
+mainly improves sample efficiency under sparse rewards, reducing the
+median steps to 90\% success from 22{,}000 to 8{,}000, while all
+conditions eventually achieve near-perfect performance. On FetchPush, the
+effect is much larger: within the one-million-step training budget,
+sparse SAC remains near failure (5.4\% mean success), whereas sparse
+SAC+HER achieves high success in 9 of 10 seeds (90.7\% mean, 99.0\%
+median). This pattern strongly supports hypotheses (i) and (ii) from the
+proposal and provides partial support for hypothesis (iii).
 
+The entropy-coefficient trajectories in Section~\ref{sec:mechanism} offer
+a plausible mechanistic account of this difference. On FetchPush without
+HER, SAC's automatically tuned entropy coefficient collapses to a very
+small value while the policy is still failing---a premature,
+overconfident convergence with no corrective signal. With HER, the
+entropy coefficient remains substantially higher over much of training
+while successful learning progresses, sustaining the exploration needed
+to eventually discover successful pushes. This pattern is consistent with
+HER being associated with healthier entropy dynamics and a more
+stochastic policy during learning, but it does not by itself establish
+entropy or exploration as the causal mechanism behind HER's performance
+benefit.
+
+The relabeling-ratio ablation further shows that increasing
+$n_{\text{sampled\_goal}}$ does not lead to a clear monotonic improvement
+in final performance. The setting $n_{\text{sampled\_goal}} = 8$ learns
+faster and achieves the highest AUC in our experiments, but all tested
+values $n_{\text{sampled\_goal}} \in \{1,4,8\}$ reach the same 99\% median
+final success. This suggests diminishing returns from additional
+hindsight relabeling rather than performance scaling proportionally with
+the relabeling ratio.
+
+Natural next steps are: (i) to repeat the mechanism analysis while
+tracking non-relabeled transitions separately, which would provide a
+cleaner goal-distance signal on FetchPush; (ii) to test whether the
+stronger HER benefit observed from FetchReach to FetchPush extends to an
+even harder goal-conditioned task such as \texttt{FetchSlide-v3} or
+\texttt{FetchPickAndPlace-v3}; and (iii) to quantify uncertainty more
+formally using bootstrap confidence intervals or other seed-level
+statistical analyses, especially given the catastrophic-failure-seed
+variability observed on FetchPush.
+
+\section{Limitations}
+\label{sec:limitations}
 We note three main limitations. First, the FetchPush experiments show
 occasional catastrophic-failure seeds, with final success as low as 0.20
 even with HER. With 10 seeds in the main comparison and 5 seeds in the
@@ -569,47 +608,6 @@ All 70 main training runs, together with the separate two-run pilot, were
 executed on the GWDG/KISSKI HPC cluster. Each run used one NVIDIA A100
 GPU, 4 CPU cores, and 16\,GB RAM. The total computational cost was
 approximately 115 GPU-hours.
-
-\section{Conclusion}
-This report set out to answer not only \emph{whether} HER helps SAC under
-sparse rewards, but also \emph{when} its contribution becomes substantial
-and \emph{why} it helps. Across the 70 main runs, the results show that
-HER's benefit increases markedly from FetchReach to FetchPush. On the
-easy reaching task, HER mainly improves sample efficiency under sparse
-rewards, reducing the median steps to 90\% success from 22{,}000 to
-8{,}000, while all conditions eventually achieve near-perfect performance.
-On the harder pushing task, the effect is much larger: within the
-one-million-step training budget, sparse SAC remains near failure,
-whereas sparse SAC+HER achieves high success in 9 of 10 seeds.
-
-The mechanism analysis provides partial evidence for why this difference
-emerges. On FetchPush without HER, SAC's automatically tuned entropy
-coefficient decreases to a very small value while the policy is still
-failing. With HER, the entropy coefficient remains substantially higher
-over much of training while successful learning progresses. This pattern
-is consistent with HER being associated with healthier entropy dynamics
-and a more stochastic policy during learning, but it does not by itself
-establish entropy or exploration as the causal mechanism behind HER's
-performance benefit.
-
-The relabeling-ratio ablation further shows that increasing
-$n_{\text{sampled\_goal}}$ does not lead to a clear monotonic improvement
-in final performance. The setting $n_{\text{sampled\_goal}} = 8$ learns
-faster and achieves the highest AUC in our experiments, but all tested
-values $n_{\text{sampled\_goal}} \in \{1,4,8\}$ reach the same 99\% median
-final success. This suggests diminishing returns from additional
-hindsight relabeling rather than performance scaling proportionally with
-the relabeling ratio.
-
-Natural next steps are: (i) to repeat the mechanism analysis while
-tracking non-relabeled transitions separately, which would provide a
-cleaner goal-distance signal on FetchPush; (ii) to test whether the
-stronger HER benefit observed from FetchReach to FetchPush extends to an
-even harder goal-conditioned task such as \texttt{FetchSlide-v3} or
-\texttt{FetchPickAndPlace-v3}; and (iii) to quantify uncertainty more
-formally using bootstrap confidence intervals or other seed-level
-statistical analyses, especially given the catastrophic-failure-seed
-variability observed on FetchPush.
 
 \begin{thebibliography}{9}
 \bibitem{haarnoja18}
@@ -662,9 +660,9 @@ reproducible manner.
   \item Did you cite all relevant related work?
     \answerYes{}
   \item Did you describe the limitations of your work?
-    \answerYes[Section~\ref{sec:discussion}]
+    \answerYes[Section~\ref{sec:limitations}]
   \item Did you include a discussion of future work?
-    \answerYes[Section~9 (Conclusion)]
+    \answerYes[Section~\ref{sec:discussion}]
 \end{enumerate}
 
 \item If you are including theoretical results...
@@ -684,7 +682,7 @@ reproducible manner.
   \item Did you run at least 10 repetitions of your method?
     \answerYes{[the main FetchReach and FetchPush comparisons use 10 seeds per condition; the separate relabeling-ratio ablation uses 5 seeds per setting, as specified in the experimental design]}
   \item Did you report error bars (e.g., with respect to the random seed after running experiments multiple times)?
-    \answerYes{[training curves report variability across random seeds; Figures~\ref{fig:entropy} and~\ref{fig:ablation} use mean $\pm$ one standard deviation, while Figure~\ref{fig:curriculum} reports the p10, median, and p90 trajectories. Seed-to-seed variability is discussed explicitly in Section~\ref{sec:discussion}]}
+    \answerYes{[training curves report variability across random seeds; Figures~\ref{fig:entropy} and~\ref{fig:ablation} use mean $\pm$ one standard deviation, while Figure~\ref{fig:curriculum} reports the p10, median, and p90 trajectories. Seed-to-seed variability is discussed explicitly in Section~\ref{sec:limitations}]}
   \item Did you include the total amount of compute and the type of resources used (e.g., type of GPUs, internal cluster, or cloud provider)?
     \answerYes{[Section~\ref{sec:repro}: approximately 115 GPU-hours; one NVIDIA A100 GPU, 4 CPU cores, and 16\,GB RAM per run on the GWDG/KISSKI HPC cluster]}
 \end{enumerate}
