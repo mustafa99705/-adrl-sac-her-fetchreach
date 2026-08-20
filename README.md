@@ -88,10 +88,9 @@ instead of the documented ≤ 0.26 m, a ~2.1× larger initial offset
 or task logic and applies identically to every condition and every task.
 `train.py` and `record_video.py` apply it at import time.
 
-Results from the unpatched Reach environment are preserved in
-`runs_broken_reset/` and `results/figures_broken_reset/` for comparison:
-there, sparse SAC sat at exactly 0% success on all 5 seeds and dense
-plateaued at ~35%.
+On the unpatched Reach environment, sparse SAC sat at exactly 0% success
+on all 5 seeds and dense plateaued at ~35% -- see `report/report.tex`
+§5 for the corrected, patched results.
 
 ## Pinned software stack
 
@@ -193,21 +192,6 @@ See `report/report.tex` §5–6 for the full results, mechanism analysis,
 ablation discussion, and limitations (including two seeds/runs that were
 increased beyond the proposal's originally specified 5-seed / {1,4}-ablation
 design, and one honest caveat about the goal-distance metric on Push).
-
-### Appendix: the same comparison on a harder Reach variant (pre-bugfix)
-
-Before the reset fix (see above), the environment unintentionally started the
-gripper ~0.55 m from the goal region — a strictly harder reach problem.
-On that variant (`runs_broken_reset/`, `results/figures_broken_reset/`):
-
-| metric (5 seeds each) | dense | sparse |
-|---|---|---|
-| final success | 0.35 ± 0.05 | **0.00 ± 0.00** |
-| final eval return | ≈ −7 | −50.0 (always-fail floor) |
-
-Dense still learned what was learnable; sparse never achieved a single
-success in 500k combined training steps — an accidental preview of the real
-FetchPush result above.
 
 ### References
 
