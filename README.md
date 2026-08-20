@@ -6,7 +6,7 @@ Hindsight Experience Replay (HER) recovers dense-like learning from the
 sparse signal alone — and this benefit grows with task difficulty.
 
 This file covers the full study (four conditions × two tasks × 10 seeds +
-HER relabeling-ratio ablation, see `proposal/proposal_v2.tex`). The
+HER relabeling-ratio ablation, see `proposal/proposal.tex`). The
 project started as a smaller 3-condition, `FetchReach-v3`-only pilot (5
 seeds) — that result is superseded but still valid and is folded into the
 numbers below. For the complete chronological history of decisions and

@@ -1,5 +1,5 @@
 """Aggregate SAC/HER runs into learning curves, mechanism plots, and summary
-tables, per proposal_v2.
+tables, per the proposal.
 
 Reads runs/<task>/<condition>/seed*/{evaluations.npz,monitor.csv,
 her_diagnostics.npz} and runs/push_ablation/nsg<k>/seed*/... and writes to

@@ -7,7 +7,7 @@ timings, raw results) behind both v1 and the v2 expansion.
 
 Project: *When and Why Does Hindsight Experience Replay Improve Soft
 Actor-Critic under Sparse Rewards?* — Mustafa Asfari, Mohammad Alkhozami.
-Proposal: `proposal/proposal_v2.tex`.
+Proposal: `proposal/proposal.tex`.
 
 ---
 
