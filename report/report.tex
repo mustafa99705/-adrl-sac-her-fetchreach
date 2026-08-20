@@ -67,18 +67,27 @@ associated with HER.
 This study connects three main topics from the lecture and the RL
 literature: off-policy maximum-entropy reinforcement learning,
 goal-conditioned reinforcement learning, and reward design under sparse
-feedback. SAC~\cite{haarnoja18} serves as the off-policy actor-critic
-learning backbone, while HER~\cite{andrychowicz17} provides a
-goal-relabeling mechanism that allows failed trajectories to be reused by
-replacing the original desired goal with goals that were actually achieved.
-The study also relates to Universal Value Function
-Approximators~\cite{schaul15} and multi-goal reinforcement learning, since
-both the policy and the action-value function must condition on the
-desired goal, enabling the same experience to be evaluated with respect to
-different goals. The Fetch environments and their sparse and dense reward
-variants are based on the multi-goal robotics benchmark introduced by
-Plappert et al.~\cite{plappert18} and are available through
-Gymnasium-Robotics.
+feedback.
+
+Soft Actor-Critic (SAC)~\cite{haarnoja18}, an off-policy, maximum-entropy
+actor-critic algorithm, serves as the learning backbone for all
+experiments in this study.
+
+Hindsight Experience Replay (HER)~\cite{andrychowicz17} addresses reward
+design under sparse feedback: it provides a goal-relabeling mechanism that
+allows failed trajectories to be reused by replacing the original desired
+goal with goals that were actually achieved, turning sparse-reward
+failures into useful training signal.
+
+This study also relates to goal-conditioned reinforcement learning and to
+Universal Value Function Approximators~\cite{schaul15}, since both the
+policy and the action-value function must condition on the desired goal,
+enabling the same experience to be evaluated with respect to different
+goals.
+
+The Fetch environments and their sparse and dense reward variants are
+based on the multi-goal robotics benchmark introduced by Plappert et
+al.~\cite{plappert18} and are available through Gymnasium-Robotics.
 
 \section{Contribution and Attribution}
 \label{sec:contribution}
