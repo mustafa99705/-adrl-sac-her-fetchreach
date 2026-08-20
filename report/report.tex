@@ -589,25 +589,17 @@ originally specified protocol.
 
 \section{Reproducibility}
 \label{sec:repro}
-All code, per-run logs, metrics, configuration files, and the LaTeX
-source of this report are included in the project repository (see the
-link on the title page). Trained model checkpoints are excluded from the
-repository because of their size (approximately 540\,MB across the 70
-main runs), but are available on request.
-
-The \texttt{README.md} documents the software stack, including the
-versions required for the \texttt{gymnasium-robotics} 1.3.x
-\texttt{-v3} environments, together with the exact commands needed to
-reproduce all experiments. \texttt{EXPERIMENT\_LOG.md} records the
-chronological history of experimental decisions, calibration results, and
-cluster job IDs underlying the results reported here. The script
-\texttt{plot\_results.py} regenerates all figures and summary tables
-directly from the stored per-run data.
-
-All 70 main training runs, together with the separate two-run pilot, were
-executed on the GWDG/KISSKI HPC cluster. Each run used one NVIDIA A100
-GPU, 4 CPU cores, and 16\,GB RAM. The total computational cost was
-approximately 115 GPU-hours.
+All code, logs, configuration files, and this report's LaTeX source are
+included in the project repository (see the link on the title page);
+\texttt{README.md} and \texttt{EXPERIMENT\_LOG.md} document the software
+stack, exact reproduction commands, and the full history of experimental
+decisions, and \texttt{plot\_results.py} regenerates all figures and
+tables from the stored per-run data. Trained model checkpoints are
+excluded from the repository due to size (approximately 540\,MB) but are
+available on request. All 70 main runs, together with the separate
+two-run pilot, were executed on the GWDG/KISSKI HPC cluster, each using
+one NVIDIA A100 GPU, 4 CPU cores, and 16\,GB RAM, for a total
+computational cost of approximately 115 GPU-hours.
 
 \begin{thebibliography}{9}
 \bibitem{haarnoja18}
