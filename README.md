@@ -5,6 +5,31 @@ learns quickly with dense rewards but struggles under sparse rewards, and
 Hindsight Experience Replay (HER) recovers dense-like learning from the
 sparse signal alone — and this benefit grows with task difficulty.
 
+### Demo videos
+
+Rollouts of a trained policy on each task/condition (`record_video.py`,
+deterministic actions, patched env). GIF preview below (1 episode,
+~12 fps); click through for the full mp4 (up to 3 episodes, 25 fps).
+
+<table align="center">
+<tr>
+<td align="center">
+<a href="results/videos/reach_dense.mp4"><img src="https://raw.githubusercontent.com/mustafa99705/-adrl-sac-her-fetchreach/main/results/videos/reach_dense.gif" width="260"></a><br/>Reach, dense
+</td>
+<td align="center">
+<a href="results/videos/reach_sparse.mp4"><img src="https://raw.githubusercontent.com/mustafa99705/-adrl-sac-her-fetchreach/main/results/videos/reach_sparse.gif" width="260"></a><br/>Reach, sparse
+</td>
+</tr>
+<tr>
+<td align="center">
+<a href="results/videos/reach_sparse_her.mp4"><img src="https://raw.githubusercontent.com/mustafa99705/-adrl-sac-her-fetchreach/main/results/videos/reach_sparse_her.gif" width="260"></a><br/>Reach, sparse+HER
+</td>
+<td align="center">
+<a href="results/videos/push_sparse_her.mp4"><img src="https://raw.githubusercontent.com/mustafa99705/-adrl-sac-her-fetchreach/main/results/videos/push_sparse_her.gif" width="260"></a><br/>Push, sparse+HER
+</td>
+</tr>
+</table>
+
 This file covers the full study (four conditions × two tasks × 10 seeds +
 HER relabeling-ratio ablation, see `proposal/proposal.tex`). The
 project started as a smaller 3-condition, `FetchReach-v3`-only pilot (5
@@ -192,31 +217,6 @@ See `report/report.tex` §5–6 for the full results, mechanism analysis,
 and ablation discussion, and §8 for limitations (including two seeds/runs that were
 increased beyond the proposal's originally specified 5-seed / {1,4}-ablation
 design, and one honest caveat about the goal-distance metric on Push).
-
-### Demo videos
-
-Rollouts of a trained policy on each task/condition (`record_video.py`,
-deterministic actions, patched env). GIF preview below (1 episode,
-~12 fps); click through for the full mp4 (up to 3 episodes, 25 fps).
-
-<table>
-<tr>
-<td align="center">
-<a href="results/videos/reach_dense.mp4"><img src="https://raw.githubusercontent.com/mustafa99705/-adrl-sac-her-fetchreach/main/results/videos/reach_dense.gif" width="260"></a><br/>Reach, dense
-</td>
-<td align="center">
-<a href="results/videos/reach_sparse.mp4"><img src="https://raw.githubusercontent.com/mustafa99705/-adrl-sac-her-fetchreach/main/results/videos/reach_sparse.gif" width="260"></a><br/>Reach, sparse
-</td>
-</tr>
-<tr>
-<td align="center">
-<a href="results/videos/reach_sparse_her.mp4"><img src="https://raw.githubusercontent.com/mustafa99705/-adrl-sac-her-fetchreach/main/results/videos/reach_sparse_her.gif" width="260"></a><br/>Reach, sparse+HER
-</td>
-<td align="center">
-<a href="results/videos/push_sparse_her.mp4"><img src="https://raw.githubusercontent.com/mustafa99705/-adrl-sac-her-fetchreach/main/results/videos/push_sparse_her.gif" width="260"></a><br/>Push, sparse+HER
-</td>
-</tr>
-</table>
 
 ### References
 
