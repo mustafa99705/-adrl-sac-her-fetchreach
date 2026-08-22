@@ -196,16 +196,23 @@ design, and one honest caveat about the goal-distance metric on Push).
 ### Demo videos
 
 Rollouts of a trained policy on each task/condition (`record_video.py`,
-deterministic actions, patched env). Best-viewed on GitHub, which renders
-these inline; if your viewer doesn't, the files are plain mp4s at the
-linked paths.
+deterministic actions, patched env). GIF preview below (1 episode,
+~12 fps); click through for the full mp4 (up to 3 episodes, 25 fps).
 
 <table>
 <tr>
-<td><video src="https://raw.githubusercontent.com/mustafa99705/-adrl-sac-her-fetchreach/main/results/videos/reach_dense.mp4" controls width="220"></video><br/>Reach, dense</td>
-<td><video src="https://raw.githubusercontent.com/mustafa99705/-adrl-sac-her-fetchreach/main/results/videos/reach_sparse.mp4" controls width="220"></video><br/>Reach, sparse</td>
-<td><video src="https://raw.githubusercontent.com/mustafa99705/-adrl-sac-her-fetchreach/main/results/videos/reach_sparse_her.mp4" controls width="220"></video><br/>Reach, sparse+HER</td>
-<td><video src="https://raw.githubusercontent.com/mustafa99705/-adrl-sac-her-fetchreach/main/results/videos/push_sparse_her.mp4" controls width="220"></video><br/>Push, sparse+HER</td>
+<td align="center">
+<a href="results/videos/reach_dense.mp4"><img src="https://raw.githubusercontent.com/mustafa99705/-adrl-sac-her-fetchreach/main/results/videos/reach_dense.gif" width="220"></a><br/>Reach, dense
+</td>
+<td align="center">
+<a href="results/videos/reach_sparse.mp4"><img src="https://raw.githubusercontent.com/mustafa99705/-adrl-sac-her-fetchreach/main/results/videos/reach_sparse.gif" width="220"></a><br/>Reach, sparse
+</td>
+<td align="center">
+<a href="results/videos/reach_sparse_her.mp4"><img src="https://raw.githubusercontent.com/mustafa99705/-adrl-sac-her-fetchreach/main/results/videos/reach_sparse_her.gif" width="220"></a><br/>Reach, sparse+HER
+</td>
+<td align="center">
+<a href="results/videos/push_sparse_her.mp4"><img src="https://raw.githubusercontent.com/mustafa99705/-adrl-sac-her-fetchreach/main/results/videos/push_sparse_her.gif" width="220"></a><br/>Push, sparse+HER
+</td>
 </tr>
 </table>
 
