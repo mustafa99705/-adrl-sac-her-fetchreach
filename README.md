@@ -90,7 +90,7 @@ or task logic and applies identically to every condition and every task.
 
 On the unpatched Reach environment, sparse SAC sat at exactly 0% success
 on all 5 seeds and dense plateaued at ~35% -- see `report/report.tex`
-§5 for the corrected, patched results.
+§6 for the corrected, patched results.
 
 ## Pinned software stack
 
@@ -189,7 +189,7 @@ with mechanism analysis in `report/report.tex`.
   ~380,000–400,000) but `{1,4,8}` converge to a similar final success region.
 
 See `report/report.tex` §5–6 for the full results, mechanism analysis,
-ablation discussion, and limitations (including two seeds/runs that were
+and ablation discussion, and §8 for limitations (including two seeds/runs that were
 increased beyond the proposal's originally specified 5-seed / {1,4}-ablation
 design, and one honest caveat about the goal-distance metric on Push).
 
