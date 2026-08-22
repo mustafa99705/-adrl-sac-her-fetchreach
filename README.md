@@ -202,10 +202,10 @@ linked paths.
 
 <table>
 <tr>
-<td><video src="results/videos/reach_dense.mp4" controls width="220"></video><br/>Reach, dense</td>
-<td><video src="results/videos/reach_sparse.mp4" controls width="220"></video><br/>Reach, sparse</td>
-<td><video src="results/videos/reach_sparse_her.mp4" controls width="220"></video><br/>Reach, sparse+HER</td>
-<td><video src="results/videos/push_sparse_her.mp4" controls width="220"></video><br/>Push, sparse+HER</td>
+<td><video src="https://raw.githubusercontent.com/mustafa99705/-adrl-sac-her-fetchreach/main/results/videos/reach_dense.mp4" controls width="220"></video><br/>Reach, dense</td>
+<td><video src="https://raw.githubusercontent.com/mustafa99705/-adrl-sac-her-fetchreach/main/results/videos/reach_sparse.mp4" controls width="220"></video><br/>Reach, sparse</td>
+<td><video src="https://raw.githubusercontent.com/mustafa99705/-adrl-sac-her-fetchreach/main/results/videos/reach_sparse_her.mp4" controls width="220"></video><br/>Reach, sparse+HER</td>
+<td><video src="https://raw.githubusercontent.com/mustafa99705/-adrl-sac-her-fetchreach/main/results/videos/push_sparse_her.mp4" controls width="220"></video><br/>Push, sparse+HER</td>
 </tr>
 </table>
 
