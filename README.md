@@ -193,6 +193,22 @@ and ablation discussion, and §8 for limitations (including two seeds/runs that 
 increased beyond the proposal's originally specified 5-seed / {1,4}-ablation
 design, and one honest caveat about the goal-distance metric on Push).
 
+### Demo videos
+
+Rollouts of a trained policy on each task/condition (`record_video.py`,
+deterministic actions, patched env). Best-viewed on GitHub, which renders
+these inline; if your viewer doesn't, the files are plain mp4s at the
+linked paths.
+
+<table>
+<tr>
+<td><video src="results/videos/reach_dense.mp4" controls width="220"></video><br/>Reach, dense</td>
+<td><video src="results/videos/reach_sparse.mp4" controls width="220"></video><br/>Reach, sparse</td>
+<td><video src="results/videos/reach_sparse_her.mp4" controls width="220"></video><br/>Reach, sparse+HER</td>
+<td><video src="results/videos/push_sparse_her.mp4" controls width="220"></video><br/>Push, sparse+HER</td>
+</tr>
+</table>
+
 ### References
 
 - Andrychowicz et al., *Hindsight Experience Replay*, NeurIPS 2017.
