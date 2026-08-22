@@ -1,4 +1,5 @@
 \documentclass{article}
+\usepackage[final,nonatbib]{adrl}
 \usepackage[utf8]{inputenc} % allow utf-8 input
 \usepackage[T1]{fontenc}    % use 8-bit T1 fonts
 \usepackage{hyperref}       % hyperlinks
@@ -106,8 +107,8 @@ to run, diagnose, and interpret the experiments:
     is not part of Stable-Baselines3 and was developed specifically for this
     study.
 
-    \item Designing and executing all 70 main training runs, together with the
-    separate two-run pilot used to calibrate the FetchPush training budget, and
+    \item Designing and executing all training runs (Section~\ref{sec:setup}),
+    including the pilot used to calibrate the FetchPush training budget, and
     developing the analysis and plotting pipeline
     (\texttt{plot\_results.py}).
 
@@ -282,7 +283,7 @@ Push  & sparse + HER & 82.8\% & 99.0\% & 4/5 & 380{,}000   & 0.553 \\
 \end{tabular}
 \end{table}
 
-At the protocol’s originally specified scale, the central finding is already clear: on FetchReach, HER mainly accelerates sparse-reward learning, whereas on FetchPush it changes the outcome from near-failure to successful learning within the available training budget. Tables 2 and 3 extend the main comparisons to 10 seeds per condition to obtain a more robust estimate of seed-to-seed variability, particularly on the noisier FetchPush task. The overall conclusion remains unchanged.
+At the protocol's originally specified scale, the central finding is already clear: on FetchReach, HER mainly accelerates sparse-reward learning, whereas on FetchPush it changes the outcome from near-failure to successful learning within the available training budget. Tables 2 and 3 extend the main comparisons to 10 seeds per condition to obtain a more robust estimate of seed-to-seed variability, particularly on the noisier FetchPush task. The overall conclusion remains unchanged.
 
 \begin{table}[H]
 \centering
@@ -473,11 +474,10 @@ task.
 \subsection{Ablation: does more relabeling always help?}
 \label{sec:ablation}
 
-The proposal specified an ablation over
-$n_{\text{sampled\_goal}} \in \{1,4\}$ with 5 seeds per setting.
-We additionally evaluated $n_{\text{sampled\_goal}}=8$ using the same number
-of seeds to test whether the effect of additional relabeling continues beyond
-the originally specified range.
+As described in Section~\ref{sec:setup}, we extended the proposal's ablation
+range with an additional $n_{\text{sampled\_goal}}=8$ setting, to test whether
+the effect of additional relabeling continues beyond the originally specified
+range.
 
 \begin{table}[H]
 \centering
@@ -597,8 +597,8 @@ decisions, calibration results, and cluster job IDs underlying the results
 reported here. The script \texttt{plot\_results.py} regenerates all figures and
 summary tables directly from the stored per-run data.
 
-All 70 main training runs, together with the separate two-run pilot, were
-executed on the GWDG/KISSKI HPC cluster. Each run used one NVIDIA A100 GPU,
+All training runs (Section~\ref{sec:setup}) were executed on the GWDG/KISSKI
+HPC cluster. Each run used one NVIDIA A100 GPU,
 4 CPU cores, and 16\,GB RAM. The total computational cost was approximately
 115 GPU-hours.
 
@@ -701,25 +701,25 @@ reproducible manner.
 \begin{enumerate}
   \item Do the main claims made in the abstract and introduction accurately
   reflect your contributions and scope?
-    \answer \textcolor{blue}{Yes}
+    \answerYes
 
   \item Did you cite all relevant related work?
-    \answer \textcolor{blue}{Yes}
+    \answerYes
 
   \item Did you describe the limitations of your work?
-    \answer \textcolor{blue}{Yes} [Section~\ref{sec:discussion}]
+    \answerYes [Section~\ref{sec:discussion}]
 
   \item Did you include a discussion of future work?
-    \answer \answer \textcolor{blue} {Yes} [Section~\ref{sec:conclusion}]
+    \answerYes [Section~\ref{sec:conclusion}]
 \end{enumerate}
 
 \item If you are including theoretical results...
 \begin{enumerate}
   \item Did you state the full set of assumptions of all theoretical results?
-    \answer \textcolor{grae}{NA} [purely empirical study; no theoretical claims]
+    \answerNA [purely empirical study; no theoretical claims]
 
   \item Did you include complete proofs of all theoretical results?
-    \answer \textcolor{grae}{NA} [purely empirical study; no theoretical results]
+    \answerNA [purely empirical study; no theoretical results]
 \end{enumerate}
 
 \item If you ran experiments (e.g. for benchmarks)...
@@ -727,31 +727,31 @@ reproducible manner.
   \item Did you include the code, data, and instructions needed to reproduce
   the main experimental results (either in the supplemental material or as a
   URL)?
-    \answer \textcolor{blue}{Yes} [GitHub repository linked on the title page;
+    \answerYes [GitHub repository linked on the title page;
     \texttt{README.md} and \texttt{EXPERIMENT\_LOG.md} document the exact
     commands and experimental decisions]
 
   \item Did you specify all the training details (e.g., data splits,
   hyperparameters, how they were chosen)?
-    \answer \textcolor{blue}{Yes} [Section~\ref{sec:setup}; hyperparameters were adopted from
+    \answerYes [Section~\ref{sec:setup}; hyperparameters were adopted from
     RL Baselines3 Zoo and no separate hyperparameter search was performed,
     as described in Section~\ref{sec:contribution}]
 
   \item Did you run at least 10 repetitions of your method?
-    \answer \textcolor{blue}{Yes} [the main FetchReach and FetchPush comparisons use
+    \answerYes [the main FetchReach and FetchPush comparisons use
     10 seeds per condition; the separate relabeling-ratio ablation uses
     5 seeds per setting as specified in the experimental design]
 
   \item Did you report error bars (e.g., with respect to the random seed after
   running experiments multiple times)?
-    \answer \textcolor{blue}{Yes} [training curves report variability across random seeds;
+    \answerYes [training curves report variability across random seeds;
     Figures~2 and~4 use mean $\pm$ one standard deviation, while Figure~3
     reports the $p10$, median, and $p90$ trajectories. Seed-to-seed
     variability is discussed explicitly in Section~\ref{sec:discussion}]
 
   \item Did you include the total amount of compute and the type of resources
   used (e.g., type of GPUs, internal cluster, or cloud provider)?
-    \answer \textcolor{blue}{Yes} [Section~\ref{sec:repro}: approximately 115 GPU-hours;
+    \answerYes [Section~\ref{sec:repro}: approximately 115 GPU-hours;
     one NVIDIA A100 GPU, 4 CPU cores, and 16\,GB RAM per run on the
     GWDG/KISSKI HPC cluster]
 \end{enumerate}
@@ -760,15 +760,15 @@ reproducible manner.
 curating/releasing new assets...
 \begin{enumerate}
   \item If your work uses existing assets, did you cite the creators?
-    \answer \textcolor{blue}{Yes} [Section~\ref{sec:contribution}: Stable-Baselines3,
+    \answerYes [Section~\ref{sec:contribution}: Stable-Baselines3,
     Gymnasium-Robotics, and RL Baselines3 Zoo]
 
   \item Did you make sure the license of the assets permits usage?
-    \answer \textcolor{blue}{Yes} [the licenses of the software packages used in this study
+    \answerYes [the licenses of the software packages used in this study
     permit their use in this academic project]
 
   \item Did you reference the assets directly within your code and repository?
-    \answer \textcolor{blue}{Yes} [exact software versions are pinned in
+    \answerYes [exact software versions are pinned in
     \texttt{requirements.txt}, and the corresponding packages are imported
     directly in \texttt{train.py}]
 \end{enumerate}
