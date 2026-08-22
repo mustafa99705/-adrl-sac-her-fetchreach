@@ -213,10 +213,12 @@ with mechanism analysis in `report/report.tex`.
   `n_sampled_goal=8` learns somewhat faster (median steps-to-90% 260,000 vs.
   ~380,000–400,000) but `{1,4,8}` converge to a similar final success region.
 
-See `report/report.tex` §6 for the full results, mechanism analysis,
-and ablation discussion, and §8 for limitations (including two seeds/runs that were
-increased beyond the proposal's originally specified 5-seed / {1,4}-ablation
-design, and one honest caveat about the goal-distance metric on Push).
+See `report/report.tex` §6 for the full results, mechanism analysis, and
+ablation discussion; §5 for the proposal deviations (10 seeds instead of 5
+per condition, plus an added `n_sampled_goal=8` ablation setting); and §7
+for limitations (seed-to-seed variability including one 0.20-success outlier
+seed on Push, the goal-distance-metric caveat on Push, and a deviation in
+Push's evaluation cadence from the proposal's originally specified interval).
 
 ### References
 
