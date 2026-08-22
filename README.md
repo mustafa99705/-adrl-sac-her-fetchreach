@@ -202,16 +202,18 @@ deterministic actions, patched env). GIF preview below (1 episode,
 <table>
 <tr>
 <td align="center">
-<a href="results/videos/reach_dense.mp4"><img src="https://raw.githubusercontent.com/mustafa99705/-adrl-sac-her-fetchreach/main/results/videos/reach_dense.gif" width="220"></a><br/>Reach, dense
+<a href="results/videos/reach_dense.mp4"><img src="https://raw.githubusercontent.com/mustafa99705/-adrl-sac-her-fetchreach/main/results/videos/reach_dense.gif" width="260"></a><br/>Reach, dense
 </td>
 <td align="center">
-<a href="results/videos/reach_sparse.mp4"><img src="https://raw.githubusercontent.com/mustafa99705/-adrl-sac-her-fetchreach/main/results/videos/reach_sparse.gif" width="220"></a><br/>Reach, sparse
+<a href="results/videos/reach_sparse.mp4"><img src="https://raw.githubusercontent.com/mustafa99705/-adrl-sac-her-fetchreach/main/results/videos/reach_sparse.gif" width="260"></a><br/>Reach, sparse
+</td>
+</tr>
+<tr>
+<td align="center">
+<a href="results/videos/reach_sparse_her.mp4"><img src="https://raw.githubusercontent.com/mustafa99705/-adrl-sac-her-fetchreach/main/results/videos/reach_sparse_her.gif" width="260"></a><br/>Reach, sparse+HER
 </td>
 <td align="center">
-<a href="results/videos/reach_sparse_her.mp4"><img src="https://raw.githubusercontent.com/mustafa99705/-adrl-sac-her-fetchreach/main/results/videos/reach_sparse_her.gif" width="220"></a><br/>Reach, sparse+HER
-</td>
-<td align="center">
-<a href="results/videos/push_sparse_her.mp4"><img src="https://raw.githubusercontent.com/mustafa99705/-adrl-sac-her-fetchreach/main/results/videos/push_sparse_her.gif" width="220"></a><br/>Push, sparse+HER
+<a href="results/videos/push_sparse_her.mp4"><img src="https://raw.githubusercontent.com/mustafa99705/-adrl-sac-her-fetchreach/main/results/videos/push_sparse_her.gif" width="260"></a><br/>Push, sparse+HER
 </td>
 </tr>
 </table>
